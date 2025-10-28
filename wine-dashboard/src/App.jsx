@@ -1,25 +1,29 @@
-import { BarChart3, Home, Settings } from "lucide-react"
-import Overview from "./pages/Overview.jsx"
-import Analytics from "./pages/Analytics.jsx"
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom"
-import Sidebar from "./components/Sidebar.jsx"
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
+import { useState } from "react"
+import Login from "./pages/Login.jsx"
+import Dashboard from "./pages/Dashboard.jsx"
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("user_username")
+  );
+
+  const handleLogin = (username) => {
+    localStorage.setItem("user_username", username);
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user_username");
+    setIsLoggedIn(false);
+  };
+
   return (
     <BrowserRouter>
-      <div className="w-screen h-screen p-4 text-gray-800">
-        <div className="w-full h-full flex gap-4">
-          <div className="bg-gray-100  rounded-2xl shadow-md w-64 p-4 flex flex-col">
-            <Sidebar />
-          </div>
-          <main className="flex-1 bg-gray-100 rounded-2xl shadow-md p-6 overflow-auto">
           <Routes>
-            <Route path="/" element={<Overview />} />
-            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route path="/*" element={isLoggedIn ? <Dashboard onLogout={handleLogout}/> : <Navigate to='/login' replace />} />
           </Routes>
-        </main>
-        </div> 
-      </div>
     </BrowserRouter>
   )
 }
