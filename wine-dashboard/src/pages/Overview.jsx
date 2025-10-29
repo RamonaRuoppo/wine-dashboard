@@ -4,6 +4,27 @@ import { generateVineyardData } from "../data/simulator";
 function Overview() {
     const [vineyardData, setVineyardData] = useState([]);
 
+    const distributionData = [
+        { name: "Vigneto A (Sangiovese)", value: 95, color: "#22c55e" },
+        { name: "Vigneto B (Merlot)", value: 70, color: "#f59e0b" },
+        { name: "Vigneto C (Trebbiano)", value: 110, color: "#10b981" },
+    ];
+
+    const qualityCostData = [
+        { year: "2021", costo: 110, qualita: 19.2 },
+        { year: "2022", costo: 115, qualita: 19.8 },
+        { year: "2023", costo: 120, qualita: 20.1 },
+        { year: "2024", costo: 129, qualita: 20.3 },
+        { year: "2025", costo: 125, qualita: 20.5 },
+    ];
+
+    const grapeAllocationData = [
+        { name: "DOCG", value: 65, color: "#722F37" },
+        { name: "IGT", value: 30, color: "#D4AF37" },
+        { name: "Declassata/Scarto", value: 5, color: "#ef4444" },
+    ];
+
+
     useEffect(() => {
         const data = generateVineyardData(30);
         setVineyardData(data);
@@ -16,7 +37,56 @@ function Overview() {
     return (
         <div>
             <h1 className="font-semibold mb-6">Overview</h1>
-            <h2 className="text-xl font-semibold text-gray-500 mt-2">Gestione Vigneto</h2>
+            <h2 className="text-xl font-semibold text-gray-500 mt-2 mb-6">Efficienza del Raccolto e Materia Prima</h2>
+
+            <h2 className="text-lg font-semibold mb-4 text-gray-700">Filtri</h2>
+            <div className="flex flex-wrap gap-4 mb-6">
+                {/* Anno di Vendemmia */}
+                <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Anno di Vendemmia
+                    </label>
+                    <select
+                        defaultValue="2025"
+                        className="w-full border border-gray-300 rounded-md p-2 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    >
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+
+                {/* Comparazione */}
+                <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Comparazione
+                    </label>
+                    <select
+                        defaultValue="prev"
+                        className="w-full border border-gray-300 rounded-md p-2 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    >
+                        <option value="prev">Anno Precedente (2024)</option>
+                        <option value="avg5">Media Storica 5 Anni</option>
+                    </select>
+                </div>
+
+                {/* Vigneto */}
+                <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Vigneto
+                    </label>
+                    <select
+                        defaultValue="all"
+                        className="w-full border border-gray-300 rounded-md p-2 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    >
+                        <option value="all">Tutti</option>
+                        <option value="sangiovese">Sangiovese</option>
+                        <option value="merlot">Merlot</option>
+                        <option value="trebbiano">Trebbiano</option>
+                    </select>
+                </div>
+            </div>
 
             <p className="text-gray-900 mt-2">Parametri Ambientali</p>
             <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">

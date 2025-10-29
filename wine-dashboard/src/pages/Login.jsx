@@ -39,10 +39,10 @@ const Login = ({ onLogin }) => {
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center bg-gradient-to-br from-green-600 to-blue-600 p-4 rounded-2xl mb-4 shadow-lg">
+                    <div className="inline-flex items-center justify-center bg-gradient-to-br from-purple-600 to-red-600 p-4 rounded-2xl mb-4 shadow-lg">
                         <Sprout className="w-12 h-12 text-white" />
                     </div>
-                    <h1 className="text-gray-900 mb-2">Wine Dashboard</h1>
+                    <h1 className="text-gray-900 mb-2">WineMetrics</h1>
                     <p className="text-gray-500">Environmental & Production Monitoring</p>
                 </div>
 
@@ -126,7 +126,7 @@ const Login = ({ onLogin }) => {
 
                 {/* Footer */}
                 <p className="text-center text-gray-500 text-sm mt-6">
-                    © 2025 Wine Analytics Platform. All rights reserved.
+                    © 2025 WineMetrics Platform. All rights reserved.
                 </p>
             </div>
         </div>

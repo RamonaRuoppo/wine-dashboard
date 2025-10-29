@@ -51,6 +51,23 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.logout-button {
+  background-color: transparent;
+  color: rgb(228, 228, 228);   
+  cursor: pointer;
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 400;
+  transition: border-color 0.25s, color 0.25s;
+}
+
+.logout-button:hover {
+  color: white;
+  background-color: var(--color-accent); /* effetto hover con colore accent */
+  border-color: var(--color-accent);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
