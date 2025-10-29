@@ -13,7 +13,7 @@ function Sidebar({ onLogout }) {
         <aside className="flex flex-col justify-between h-full text-xl text-gray-100 font-regular mb-2 p-2 mt-2">
             <div>
                 <h3 className="text-2xl mb-6 flex items-center gap-3">
-                    <Sprout className="bg-gradient-to-br from-purple-600 to-red-600 p-3 rounded-2xl w-12 h-12 text-white shadow-lg" />
+                    <Sprout className="bg-gradient-to-br from-yellow-200 to-red-600 p-3 rounded-2xl w-12 h-12 text-white shadow-lg" />
                     WineMetrics
                 </h3>
                 <hr className="border-t border-white/10 my-4 mb-12" />
