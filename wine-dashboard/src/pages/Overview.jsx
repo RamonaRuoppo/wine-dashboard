@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { generateVineyardData } from "../data/simulator";
-import { Badge, ChevronDown, CloudRain, Info, Sun, Thermometer, TrendingDown, TrendingUp } from "lucide-react";
+import { AlertTriangle, ChartBar, ChevronDown, Circle, CloudRain, Droplets, Info, Sun, Thermometer, TrendingDown, TrendingUp } from "lucide-react";
 import Card from "../components/Card";
 
 function Overview() {
@@ -149,46 +149,54 @@ function Overview() {
                 </Card>
             </div>
 
-            {/* Parametri */}
+            {/* Monitoraggio sanitario e operativo */}
+            <div className="flex items-center gap-3 mb-6">
+                <Droplets className="w-6 h-6 text-[#722F37]"></Droplets>
+                <h2 className="text-lg font-semibold text-gray-700">Monitoraggio Sanitario e Operativo</h2>
+            </div>
 
-            <p className="text-gray-900 mt-2">Parametri Ambientali</p>
-            <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Temperatura</h3>
-                    <p className="text-2xl">{latest.temperature}°C</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Umidità</h3>
-                    <p className="text-2xl">{latest.humidity}%</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Precipitazioni</h3>
-                    <p className="text-2xl">{latest.rainfall}mm</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Ore Solari</h3>
-                    <p className="text-2xl">{latest.sunlightHours} h</p>
-                </div>
-            </section>
-
-            <p className="text-gray-900 mt-2">Parametri di Produzione</p>
-            <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Grado Brix</h3>
-                    <p className="text-2xl">{latest.sugarLevel}</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Acqua usata</h3>
-                    <p className="text-2xl">{latest.waterUsed} L</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Fertilizzante usato</h3>
-                    <p className="text-2xl">{latest.fertilizerUsed} kg</p>
-                </div>
-            </section>
+            {/* Risk Indicators */}
+            <div className="space-y-4 w-92"> {/* TODO: edit here width dimension */}
+                {/* Phytosanitary Pressure */}
+                <Card className="p-6 bg-white">
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-sm text-gray-600">Pressione Fitosanitaria</h3>
+                                <div className="relative inline-block group">
+                                    <Info size={12} className="cursor-pointer" />
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 text-xs text-white bg-[#530711e2] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        Indice sintetico calcolato da modelli predittivi basati su temperatura e umidità. Valuta il rischio di attacchi di patogeni e la necessità di interventi fitosanitari.                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-500">Rischio Malattie</p>
+                        </div>
+                        <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                    </div>
+                    <div className="flex items-center justify-center py-4">
+                        <div className="relative w-24 h-24">
+                            <Circle size={100} color="#530711e2" /> {/* TODO: edit here circle and progress */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-2xl text-gray-900">70%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-1000 rounded-full border border-yellow-300">
+                        Rischio Medio
+                    </span>
+                    <p className="text-xs text-gray-500 mt-2 text-center">
+                        Peronospora, Oidio
+                    </p>
+                </Card>
+            </div>
 
             {/* Filtri */}
-            <h2 className="text-lg font-semibold mb-4 text-gray-700">Filtri</h2>
+
+            <div className="flex items-center gap-3 mb-6 mt-6">
+                <ChartBar className="w-6 h-6 text-[#722F37]"></ChartBar>
+                <h2 className="text-lg font-semibold text-gray-700">Efficienza del Raccolto</h2>
+            </div>
+            <h3 className="font-semibold mb-4 text-gray-700">Filtri</h3>
             <div className="flex flex-wrap gap-4 mb-6">
                 {/* Anno di Vendemmia */}
                 <div className="flex-1 min-w-[200px]">
@@ -251,6 +259,44 @@ function Overview() {
                     </div>
                 </div>
             </div>
+
+            {/* Parametri */}
+
+            <p className="text-gray-900 mt-2">Parametri Ambientali</p>
+            <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-lg font-medium mb-2">Temperatura</h3>
+                    <p className="text-2xl">{latest.temperature}°C</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-lg font-medium mb-2">Umidità</h3>
+                    <p className="text-2xl">{latest.humidity}%</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-lg font-medium mb-2">Precipitazioni</h3>
+                    <p className="text-2xl">{latest.rainfall}mm</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-lg font-medium mb-2">Ore Solari</h3>
+                    <p className="text-2xl">{latest.sunlightHours} h</p>
+                </div>
+            </section>
+
+            <p className="text-gray-900 mt-2">Parametri di Produzione</p>
+            <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-lg font-medium mb-2">Grado Brix</h3>
+                    <p className="text-2xl">{latest.sugarLevel}</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-lg font-medium mb-2">Acqua usata</h3>
+                    <p className="text-2xl">{latest.waterUsed} L</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="text-lg font-medium mb-2">Fertilizzante usato</h3>
+                    <p className="text-2xl">{latest.fertilizerUsed} kg</p>
+                </div>
+            </section>
         </div>
     );
 }
