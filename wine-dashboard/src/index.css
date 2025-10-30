@@ -37,7 +37,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #e5e5e5;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -63,6 +63,23 @@ button:focus-visible {
 }
 
 .logout-button:hover {
+  color: white;
+  background-color: var(--color-accent); /* effetto hover con colore accent */
+  border-color: var(--color-accent);
+}
+
+.delete-button {
+  background-color: #9d2636;
+  color: rgb(228, 228, 228);   
+  cursor: pointer;
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 400;
+  transition: border-color 0.25s, color 0.25s;
+}
+
+.delete-button:hover {
   color: white;
   background-color: var(--color-accent); /* effetto hover con colore accent */
   border-color: var(--color-accent);

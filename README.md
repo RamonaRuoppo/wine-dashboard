@@ -1,8 +1,8 @@
 # wine-dashboard
 *Project Work 2025*
 
-**WineMetrics** è una piattaforma web ibnterattiva progettata per il monitoraggio e l'analisi dei dati ambientali e di produzione nel settore vitivinicolo.
-Questa dashboard permette agli utenti di visualizzare in tempo reale le condizioni del vigneto, inclusi temperatura, umidità, precipitazioni, ecc.
+**WineMetrics** è una piattaforma web interattiva progettata per il monitoraggio e l'analisi dei dati ambientali e di produzione nel settore vitivinicolo, con il fine di supportare le decisioni strategiche.
+La presente dashboard permette agli utenti di visualizzare in tempo reale le metriche critiche, fornendo una visione completa sulle condizioni del vigneto, incluso ciò che riguarda i dati ambientali, l'efficienza del raccolto e la performance finanziaria.
 
 ### Caratteristiche Principali
 

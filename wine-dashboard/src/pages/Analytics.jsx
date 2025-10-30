@@ -6,7 +6,7 @@ const data = generateVineyardData(30);
 function Analytics() {
   return (
     <div>
-      <h1 className="font-semibold mb-6">Analytics</h1>
+      <h2 className="text-3xl font-semibold mb-4">Analytics</h2>
       <p className="text-gray-500 mb-6">Qui è possibile visualizzare diversi dati e insights riguarto il tuo vigneto.</p>
       <LineChart width={800} height={400} data={data}>
         <CartesianGrid strokeDasharray="3 3" />

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { generateVineyardData } from "../data/simulator";
+import { Badge, ChevronDown, CloudRain, Info, Sun, Thermometer, TrendingDown, TrendingUp } from "lucide-react";
+import Card from "../components/Card";
 
 function Overview() {
     const [vineyardData, setVineyardData] = useState([]);
 
-    const distributionData = [
+    const vineyard = [
         { name: "Vigneto A (Sangiovese)", value: 95, color: "#22c55e" },
         { name: "Vigneto B (Merlot)", value: 70, color: "#f59e0b" },
         { name: "Vigneto C (Trebbiano)", value: 110, color: "#10b981" },
@@ -24,6 +26,18 @@ function Overview() {
         { name: "Declassata/Scarto", value: 5, color: "#ef4444" },
     ];
 
+    // Indici climatici
+    const gddCurrent = 1850;
+    const gddHistoric = 1720;
+    const gddPercentage = ((gddCurrent / gddHistoric) * 100).toFixed(0);
+
+    const precipitationCurrent = 285; // mm
+    const precipitationHistoric = 340; // mm
+    const precipitationDiff = -16; // percentage
+
+    const sunHoursCurrent = 1240;
+    const sunHoursHistoric = 1150;
+    const sunHoursDiff = +8; // percentage
 
     useEffect(() => {
         const data = generateVineyardData(30);
@@ -36,81 +50,106 @@ function Overview() {
 
     return (
         <div>
-            <h1 className="font-semibold mb-6">Overview</h1>
+            <h2 className="text-3xl font-semibold mb-4">Overview</h2>
             <h2 className="text-xl font-semibold text-gray-500 mt-2 mb-6">Efficienza del Raccolto e Materia Prima</h2>
 
-            <h2 className="text-lg font-semibold mb-4 text-gray-700">Filtri</h2>
-            <div className="flex flex-wrap gap-4 mb-6">
-                {/* Anno di Vendemmia */}
-                <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Anno di Vendemmia
-                    </label>
-                    <div className="relative w-full">
-                        <select
-                            defaultValue="2025"
-                            className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
-                        >
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                        </select>
-                        {/* Freccetta a destra */}
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                            <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Comparazione */}
-                <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Comparazione
-                    </label>
-                    <div className="relative w-full">
-                        <select
-                            defaultValue="prev"
-                            className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
-                        >
-                            <option value="prev">Anno Precedente (2024)</option>
-                            <option value="avg5">Media Storica 5 Anni</option>
-                        </select>
-                        {/* Freccetta a destra */}
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                            <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Vigneto */}
-                <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Vigneto
-                    </label>
-                    <div className="relative w-full">
-                        <select
-                            defaultValue="all"
-                            className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
-                        >
-                            <option value="all">Tutti</option>
-                            <option value="sangiovese">Sangiovese</option>
-                            <option value="merlot">Merlot</option>
-                            <option value="trebbiano">Trebbiano</option>
-                        </select>
-                        {/* Freccetta a destra */}
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                            <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+            {/* Indici Agronomici e Climatici */}
+            <div className="flex items-center gap-3 mb-6">
+                <Thermometer className="w-6 h-6 text-[#722F37]"></Thermometer>
+                <h2 className="text-lg font-semibold text-gray-700">Indici Agronomici e Climatici</h2>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                {/* GDD - Growing Degree Days */}
+                <Card className="p-6 bg-white hover:shadow-lg transition-shadow">
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-sm text-gray-600">Somma Termica Effettiva</h3>
+                                <div className="relative inline-block group">
+                                    <Info size={12} className="cursor-pointer" />
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 text-xs text-white bg-[#530711e2] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        Il GDD misura l'accumulo di calore utile durante la stagione vegetativa.
+                                        <br /> Rilevanza: Indica la velocità di maturazione. Un GDD alto può significare una vendemmia precoce e un alto grado zuccherino (potenziale alcolico).
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-500">Growing Degree Days (GDD)</p>
+                        </div>
+                        <Sun className="w-5 h-5 text-orange-500" />
+                    </div>
+                    <div className="text-3xl text-[#722F37] mb-2">{gddCurrent}</div>
+                    <progress value={Number(gddPercentage)} className="mb-2 h-2" />
+                    <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-500">Media Storica: {gddHistoric}</span>
+                        <span className="text-green-600">+{((gddCurrent - gddHistoric) / gddHistoric * 100).toFixed(1)}%</span>
+                    </div>
+                </Card>
+
+                {/* Precipitazioni */}
+                <Card className="p-6 bg-white hover:shadow-lg transition-shadow">
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-sm text-gray-600">Indice di Siccità</h3>
+                                <div className="relative inline-block group">
+                                    <Info size={12} className="cursor-pointer" />
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 text-xs text-white bg-[#530711e2] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        Volume totale di pioggia caduta nel periodo cruciale. <br />
+                                        Rilevanza: L'acqua influisce sulla dimensione dell'acino (Resa) e sullo stress idrico. Un basso indice di siccità indica stress idrico, che può ridurre la resa ma aumentare la concentrazione di zuccheri e polifenoli (migliore qualità).
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-500">Precipitazioni Totali</p>
+                        </div>
+                        <CloudRain className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div className="text-3xl text-blue-600 mb-2">{precipitationCurrent} mm</div>
+                    <div className="flex items-center gap-2 text-sm">
+                        <TrendingDown className="w-4 h-4 text-orange-600" />
+                        <span className="text-orange-600">{precipitationDiff}% vs. Media</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                        Media Storica: {precipitationHistoric} mm
+                    </div>
+                    <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold text-orange-600 bg-orange-100 rounded-full border border-orange-300">
+                        Stress Idrico Moderato
+                    </span>
+                </Card>
+
+                {/* Ore di sole */}
+                <Card className="p-6 bg-white hover:shadow-lg transition-shadow">
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-sm text-gray-600">Ore di Sole Totali</h3>
+                                <div className="relative inline-block group">
+                                    <Info size={12} className="cursor-pointer" />
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 text-xs text-white bg-[#530711e2] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        Il totale delle ore di luce solare nelle fasi finali di maturazione. <br />
+                                        Rilevanza: Cruciali per la sintesi dei composti aromatici, dei polifenoli e degli zuccheri. Un aumento (come +8% vs. Media) è generalmente un indicatore di alta qualità potenziale.
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-500">Durante la Maturazione</p>
+                        </div>
+                        <Sun className="w-5 h-5 text-yellow-500" />
+                    </div>
+                    <div className="text-3xl text-yellow-600 mb-2">{sunHoursCurrent} h</div>
+                    <div className="flex items-center gap-2 text-sm">
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                        <span className="text-green-600">+{sunHoursDiff}% vs. Media</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                        Media Storica: {sunHoursHistoric} h
+                    </div>
+                    <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold text-orange-600 bg-orange-100 rounded-full border border-orange-300">
+                        Condizioni Ottimali
+                    </span>
+                </Card>
+            </div>
+
+            {/* Parametri */}
 
             <p className="text-gray-900 mt-2">Parametri Ambientali</p>
             <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
@@ -147,6 +186,71 @@ function Overview() {
                     <p className="text-2xl">{latest.fertilizerUsed} kg</p>
                 </div>
             </section>
+
+            {/* Filtri */}
+            <h2 className="text-lg font-semibold mb-4 text-gray-700">Filtri</h2>
+            <div className="flex flex-wrap gap-4 mb-6">
+                {/* Anno di Vendemmia */}
+                <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Anno di Vendemmia
+                    </label>
+                    <div className="relative w-full">
+                        <select
+                            defaultValue="2025"
+                            className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
+                        >
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Comparazione */}
+                <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Comparazione
+                    </label>
+                    <div className="relative w-full">
+                        <select
+                            defaultValue="prev"
+                            className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
+                        >
+                            <option value="prev">Anno Precedente (2024)</option>
+                            <option value="avg5">Media Storica 5 Anni</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Vigneto */}
+                <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Vigneto
+                    </label>
+                    <div className="relative w-full">
+                        <select
+                            defaultValue="all"
+                            className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
+                        >
+                            <option value="all">Tutti</option>
+                            <option value="sangiovese">Sangiovese</option>
+                            <option value="merlot">Merlot</option>
+                            <option value="trebbiano">Trebbiano</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
