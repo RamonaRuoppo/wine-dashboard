@@ -143,7 +143,7 @@ function Overview() {
                     <div className="text-xs text-gray-500 mt-1">
                         Media Storica: {sunHoursHistoric} h
                     </div>
-                    <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold text-orange-600 bg-orange-100 rounded-full border border-orange-300">
+                    <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded-full border border-green-300">
                         Condizioni Ottimali
                     </span>
                 </Card>
