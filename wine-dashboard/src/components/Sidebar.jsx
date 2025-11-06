@@ -1,4 +1,4 @@
-import { BarChart3, LayoutDashboard, LogOut, Settings, Sprout } from "lucide-react";
+import { BarChart2, BarChart3, Grape, LayoutDashboard, LogOut, PersonStanding, Settings, Sprout, UserCircle } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 
 function Sidebar({ onLogout }) {
@@ -29,6 +29,11 @@ function Sidebar({ onLogout }) {
                         <BarChart3 size={18} className="text-white" />
                         <span className="text-white">Analytics</span>
                     </NavLink>
+
+                    <NavLink to="/analytics" className={linkClasses}>
+                        <BarChart2 size={18} className="text-white" />
+                        <span className="text-white">Logistica</span>
+                    </NavLink>
                 </nav>
 
                 <h4 className="text-base font-regular text-gray-300 mb-6 ">GENERALI</h4>
@@ -44,9 +49,11 @@ function Sidebar({ onLogout }) {
             </div>
 
             <div>
-
-
                 <hr className="border-t border-white/10 my-4" />
+                <div className="flex items-center gap-2 mb-4 ml-4">
+                    <Grape size={22} className="text-orange-300" />
+                    <span className="text-lg text-orange-300">Antinori</span>
+                </div>
                 <button
                     type="button"
                     onClick={onLogout}

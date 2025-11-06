@@ -85,6 +85,28 @@ button:focus-visible {
   border-color: var(--color-accent);
 }
 
+.progress-bar {
+  -webkit-appearance: none;
+  position: relative; 
+  height: 16px; 
+  border-radius: 50px;
+  border: none;
+  background-color: #f0f2f4;
+  overflow: hidden;
+  appearance: none;
+}
+
+.progress-bar::-webkit-progress-bar {
+  background-color: #e4e7eb; 
+  border-radius: 50px;
+}
+
+.progress-bar::-webkit-progress-value {
+  background: linear-gradient(90deg, #f6be3b, #fab260);
+  border-radius: 50px;
+  transition: width 0.3s ease;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
