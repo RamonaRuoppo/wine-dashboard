@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
 import { useState } from "react"
 import Login from "./pages/Login.jsx"
-import Dashboard from "./pages/Dashboard.jsx"
+import Dashboard from "./components/Dashboard.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(

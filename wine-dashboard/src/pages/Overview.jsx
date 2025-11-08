@@ -1,34 +1,19 @@
 import { useEffect, useState } from "react";
 import { generateVineyardData } from "../data/simulator";
-import { AlertTriangle, Circle, CloudRain, Droplet, Droplets, Info, Sun, Sunrise, Thermometer, ThermometerSnowflake, TrendingDown, TrendingUp } from "lucide-react";
-import Card from "../components/card/Card";
-import { calculateGDD, classifyWinkler } from "../utils/climateCalculations";
+import { Calendar, CloudRain, Droplet, Droplets, Grape, ShieldAlert, Sun, Thermometer, ThermometerSnowflake, TrendingDown, TrendingUp, Wine, Wrench } from "lucide-react";
+import { calculateDailyGDD, classifyWinkler } from "../utils/climateCalculations";
 import MetricCard from "../components/MetricCard";
 import SummaryCard from "../components/SummaryCard";
+import Chart from "../components/Chart";
+
+const data = generateVineyardData(30);
 
 function Overview() {
+    const today = new Date().toISOString().split("T")[0];
+
     const [vineyardData, setVineyardData] = useState([]);
-    const [climate, setClimate] = useState({ gdd: 0, winkler: "",  gddPercentage: 0});
-
-    const vineyard = [
-        { name: "Vigneto A (Sangiovese)", value: 95, color: "#22c55e" },
-        { name: "Vigneto B (Merlot)", value: 70, color: "#f59e0b" },
-        { name: "Vigneto C (Trebbiano)", value: 110, color: "#10b981" },
-    ];
-
-    const qualityCostData = [
-        { year: "2021", costo: 110, qualita: 19.2 },
-        { year: "2022", costo: 115, qualita: 19.8 },
-        { year: "2023", costo: 120, qualita: 20.1 },
-        { year: "2024", costo: 129, qualita: 20.3 },
-        { year: "2025", costo: 125, qualita: 20.5 },
-    ];
-
-    const grapeAllocationData = [
-        { name: "DOCG", value: 65, color: "#722F37" },
-        { name: "IGT", value: 30, color: "#D4AF37" },
-        { name: "Declassata/Scarto", value: 5, color: "#ef4444" },
-    ];
+    const [selectedDate, setSelectedDate] = useState(today);
+    const [climate, setClimate] = useState({ gdd: 0, winkler: "", gddPercentage: 0 });
 
     // Indici climatici
     const gddHistoric = 1720;
@@ -41,6 +26,9 @@ function Overview() {
     const sunHoursHistoric = 1150;
     const sunHoursDiff = +8; // percentage
 
+    const upTrendIcon = <TrendingUp className="w-4 h-4 text-green-600" />;
+    const downTrendIcon = <TrendingDown className="w-4 h-4 text-red-600" />;
+
     useEffect(() => {
         const data = generateVineyardData(30);
         setVineyardData(data);
@@ -48,7 +36,7 @@ function Overview() {
 
 
         // calcolo GDD e Winkler
-        const totalGDD = calculateGDD() || 0;
+        const totalGDD = calculateDailyGDD() || 0;
         const winklerClass = classifyWinkler(totalGDD) || "N/A";
         const gddPercentage = ((totalGDD / gddHistoric) * 100).toFixed(0);
 
@@ -61,12 +49,23 @@ function Overview() {
 
     if (!vineyardData.length) return <p>Caricamento dati...</p>
 
-    const latest = vineyardData[vineyardData.length - 1];
+    const selectedData =
+        vineyardData.find((d) => d.date === selectedDate) ||
+        vineyardData[vineyardData.length - 1];
 
     return (
         <div>
-            <h2 className="text-3xl font-semibold mb-4">Overview</h2>
-            <h2 className="text-xl font-semibold text-gray-500 mt-2 mb-6">Efficienza del Raccolto e Materia Prima</h2>
+            <div className="flex items-center justify-between">
+                <p className="text-3xl font-semibold mb-4">Overview</p>
+                <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="bg-white border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-700 
+                            focus:outline-none focus:ring-2 focus:ring-[#722F37] focus:border-[#722F37] 
+                            transition-shadow shadow-sm cursor-pointer"
+                />
+            </div>
 
             {/* Indici Agronomici e Climatici */}
 
@@ -75,18 +74,66 @@ function Overview() {
                 <h2 className="text-lg font-semibold text-gray-700">Indici Agronomici e Climatici</h2>
             </div>
 
+            <div className="flex items-center gap-6 mb-6">
+                <MetricCard
+                    title="Temperatura media"
+                    value={selectedData.temperature}
+                    unit="°C"
+                    icon={<ThermometerSnowflake className="text-orange-400" />}
+                    valueColor={"text-gray-600"}
+                />
+
+                <MetricCard
+                    title="Grado Brix"
+                    unit={"%"}
+                    value={selectedData.sugarLevel} //TODO: gestire gradi brix
+                    icon={<Wine className="text-red-400" />}
+                    valueColor={"text-gray-600"}
+                />
+
+                <MetricCard
+                    title="Resa Uva"
+                    value={selectedData.grapeYield}
+                    unit="Q.li/Ha"
+                    icon={<Grape className="text-purple-400" />}
+                    valueColor={"text-gray-600"}
+                />
+
+                <MetricCard
+                    title="Uso Idrico"
+                    value={selectedData.waterUsed} //TODO: gestire uso 
+                    valueColor={"text-gray-600"}
+                    unit={"L/L"}
+                    icon={<Droplet className="text-blue-400" />}
+                />
+
+                <MetricCard
+                    title="Rischio Sanitario"
+                    value={"Basso"} //TODO: gestire livelli
+                    valueColor={"text-green-600"}
+                    icon={<ShieldAlert className="text-green-600" />}
+                />
+            </div>
+
+            {/* Monitoraggio */}
+
+            <div className="flex items-center gap-3 mb-6">
+                <Wrench className="w-6 h-6 text-[#722F37]" />
+                <h2 className="text-lg font-semibold text-gray-700">Monitoraggio Operativo</h2>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 {/* GDD - Growing Degree Days */}
                 <SummaryCard //TODO: sistemare dati e progress bar
-                    title="Somma Termica Effettiva"
+                    title="Somma Termica"
                     subtitle="Growing Degree Days (GDD)"
                     icon={<Sun className="w-5 h-5 text-orange-500" />}
                     info="Il GDD misura l'accumulo di calore utile durante la stagione vegetativa. Un valore alto può significare una vendemmia precoce e un grado zuccherino elevato."
                     value={climate.gdd + " °C/giorni"}
                     historicValue={gddHistoric}
                     diff={((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) + "%"}
-                    diffIcon={<TrendingUp className="w-4 h-4 text-green-600" />}
-                    diffColor="text-green-600"
+                    diffIcon= {((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) > 0 ? upTrendIcon : downTrendIcon}
+                    diffColor={((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) > 0 ? "text-green-600" : "text-red-600"}
                     progress={climate.gddPercentage}
                     badgeText={
                         climate.gddPercentage > 110
@@ -126,8 +173,8 @@ function Overview() {
                     icon={<CloudRain className="w-5 h-5 text-blue-500" />}
                     info="Volume totale di pioggia caduta nel periodo cruciale. Rilevanza: L'acqua influisce sulla dimensione dell'acino (Resa) e sullo stress idrico. Un basso indice di siccità indica stress idrico, che può ridurre la resa ma aumentare la concentrazione di zuccheri e polifenoli (migliore qualità)."
                     diff={precipitationDiff + "%"}
-                    diffIcon={<TrendingDown className="w-4 h-4 text-orange-600" />}
-                    diffColor="text-orange-600"
+                    diffIcon={precipitationDiff > 0 ? upTrendIcon : downTrendIcon}
+                    diffColor={precipitationDiff > 0 ? "text-green-600" : "text-red-600"}
                     historicValue={precipitationHistoric + "mm"}
                     badgeText="Stress Idrico Moderato"
                     badgeColor="text-orange-600"
@@ -144,8 +191,8 @@ function Overview() {
                     info="Il totale delle ore di luce solare nelle fasi finali di maturazione. Rilevanza: Cruciali per la sintesi dei composti aromatici, dei polifenoli e degli zuccheri. Un aumento (come +8% vs. Media) è generalmente un indicatore di alta qualità potenziale."
                     historicValue={sunHoursHistoric + " h"}
                     diff={sunHoursDiff + "%"}
-                    diffIcon={<TrendingUp className="w-4 h-4 text-green-600" />}
-                    diffColor="text-green-600"
+                    diffIcon={sunHoursDiff > 0 ? upTrendIcon : downTrendIcon}
+                    diffColor={sunHoursDiff > 0 ? "text-green-600" : "text-red-600"}
                     badgeText="Condizioni Ottimali"
                     badgeColor="text-green-600"
                     badgeBg="bg-green-100"
@@ -155,72 +202,14 @@ function Overview() {
 
             </div>
 
-            {/* Parametri Ambientali */}
-            <p className="text-gray-900 mt-6">Parametri Ambientali</p>
-            <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <MetricCard title={"Temperatura Media"} value={latest.temperature} unit="°C" icon={<ThermometerSnowflake className="text-red-400" />} trend={+2.1} />
-                <MetricCard title={"Umidità"} value={latest.humidity} unit="%" icon={<Droplet className="text-blue-300" />} trend={-1.2} />
-                <MetricCard title={"Precipitazioni"} value={latest.rainfall} unit="mm" icon={<CloudRain className="text-blue-600" />} trend={-0.2} />
-                <MetricCard title={"Ore Solari"} value={latest.sunlightHours} unit="h" icon={<Sunrise className="text-orange-300" />} trend={+0.2} />
-            </section>
 
-            {/* Monitoraggio sanitario e operativo */}
+            <Chart label="Umidità" dataKey={"humidity"} color="#3B82F6"
+                data={vineyardData.slice(0, 25).map((d, i) => ({
+                    hour: `${String(i).padStart(2, "0")}:00`,
+                    humidity: d.humidity
+                }))}
+            />
 
-            <div className="flex items-center gap-3 mb-6">
-                <Droplets className="w-6 h-6 text-[#722F37]"></Droplets>
-                <h2 className="text-lg font-semibold text-gray-700">Monitoraggio Sanitario e Operativo</h2>
-            </div>
-            {/* Risk Indicators */}
-            <div className="space-y-4 w-92"> {/* TODO: edit here width dimension */}
-                {/* Phytosanitary Pressure */}
-                <Card className="p-6 bg-white">
-                    <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                                <h3 className="text-sm text-gray-600">Pressione Fitosanitaria</h3>
-                                <div className="relative inline-block group">
-                                    <Info size={12} className="cursor-pointer" />
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 text-xs text-white bg-[#530711e2] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        Indice sintetico calcolato da modelli predittivi basati su temperatura e umidità. Valuta il rischio di attacchi di patogeni e la necessità di interventi fitosanitari.                                    </div>
-                                </div>
-                            </div>
-                            <p className="text-xs text-gray-500">Rischio Malattie</p>
-                        </div>
-                        <AlertTriangle className="w-5 h-5 text-yellow-500" />
-                    </div>
-                    <div className="flex items-center justify-center py-4">
-                        <div className="relative w-24 h-24">
-                            <Circle size={100} color="#530711e2" /> {/* TODO: edit here circle and progress */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-2xl text-gray-900">70%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-1000 rounded-full border border-yellow-300">
-                        Rischio Medio
-                    </span>
-                    <p className="text-xs text-gray-500 mt-2 text-center">
-                        Peronospora, Oidio
-                    </p>
-                </Card>
-            </div>
-
-            {/* Parametri */}
-            <p className="text-gray-900 mt-2">Parametri di Produzione</p>
-            <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Grado Brix</h3>
-                    <p className="text-2xl">{latest.sugarLevel}</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Acqua usata</h3>
-                    <p className="text-2xl">{latest.waterUsed} L</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="text-lg font-medium mb-2">Fertilizzante usato</h3>
-                    <p className="text-2xl">{latest.fertilizerUsed} kg</p>
-                </div>
-            </section>
         </div>
     );
 }

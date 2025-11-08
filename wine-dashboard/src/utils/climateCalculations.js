@@ -1,6 +1,11 @@
+/** 
+ * Calcoli climatici (GDD, Winkler, stress)
+ */ 
+
 // Simulatore per le temperature necessarie al calcolo del GDD
 export function temperatureSimulator(startMonth = 3, endMonth = 10) {
     const today = new Date();
+    // Stagione di crescita
     const startOfSeason = new Date(today.getFullYear(), startMonth, 1); // 1 aprile
     const endOfSeason = new Date(today.getFullYear(), endMonth, 0); // 31 ottobre
     const days = Math.floor((endOfSeason - startOfSeason) / (1000 * 60 * 60 * 24)) + 1; //conversione in gg
@@ -47,36 +52,62 @@ export function temperatureSimulator(startMonth = 3, endMonth = 10) {
     return temperatures;
 }
 
-// Calcola i Gradi Giorno di Crescita (GDD) per un la stagione corrente
-export function calculateGDD(baseTemperature = 10) {
-    const temps = temperatureSimulator();
-    let totalGDD = 0;
+export function calculateDailyGDD(minTemp, maxTemp, baseTemp = 10) {
+    const avgTemp = (minTemp + maxTemp) / 2;
+    const dailyGDD = avgTemp - baseTemp;
+    return Math.max(0, dailyGDD); // il GDD è 0 se la temp media è inferiore alla baseTemp
+}
 
-    temps.forEach(({ minTemp, maxTemp }) => {
-        const avgTemp = (maxTemp + minTemp) / 2;
-        const dailyGDD = Math.max(avgTemp - baseTemperature, 0);
-        totalGDD += dailyGDD;
-    });
-    console.log('')
-
-    console.log("Somma Termica Effettiva (GDD):", totalGDD.toFixed(2));
+export function calculateSeasonalGDD(temps, baseTemp = 10) {
+    const totalGDD = temps.reduce((accumulator, day) => {
+        const dailyGDD = calculateDailyGDD(day.minTemp, day.maxTemp, baseTemp);
+        return accumulator + dailyGDD;
+    }, 0);
     return totalGDD;
 }
 
 // Classifica il clima viticolo in base all'indice di Winkler (sommatoria dei GDD)
 export function classifyWinkler(totalGDD) {
-    let climateRegion = "";
-
-    if (totalGDD < 1390) {
-        climateRegion = "Regione I (clima fresco)";
-    } else if (totalGDD < 1670) {
-        climateRegion = "Regione II (temperato)";
-    } else if (totalGDD < 1945) {
-        climateRegion = "Regione III (caldo)";
+    if (totalGDD <= 1389) {
+        return { region: "I", name: "Fredda", description: "Ideale per vitigni precoci (es. Riesling, Pinot Nero)." };
+    } else if (totalGDD <= 1667) {
+        return { region: "II", name: "Intermedia", description: "Buona per vitigni da tavola e maturazione intermedia." };
+    } else if (totalGDD <= 1944) {
+        return { region: "III", name: "Temperata", description: "Adatta alla maggior parte dei vitigni classici (es. Sangiovese)." };
+    } else if (totalGDD <= 2222) {
+        return { region: "IV", name: "Calda", description: "Richiede vitigni che amano il calore (es. Syrah, Grenache)." };
     } else {
-        climateRegion = "Regione IV-V (molto caldo)";
+        return { region: "V", name: "Molto Calda", description: "Rischio di maturazione troppo rapida e bassa acidità." };
     }
+}
 
-    console.log("Regione:", climateRegion)
-    return climateRegion;
+export function calculateDailyHuglin(minTemp, maxTemp, baseTemp = 10) {
+    const avgTemp = (minTemp + maxTemp) / 2;
+    const avgWeightedTemp = (avgTemp + maxTemp) / 2;
+    const dailyHuglin = avgWeightedTemp - baseTemp;
+    return Math.max(0, dailyHuglin);
+}
+
+export function calculateHuglinIndex(dailyData, kFactor = 1.06) { // fattore di latitudine Nord Italia
+    const accumulatedGDD = dailyData.reduce((accumulator, day) => {
+        const dailyHuglinValue = calculateDailyHuglin(day.minTemp, day.maxTemp); 
+        return accumulator + dailyHuglinValue;
+    }, 0);
+
+    const totalHuglin = accumulatedGDD * kFactor;
+    return totalHuglin;
+}
+
+export function classifyHuglin(huglinIndex) {
+    if (huglinIndex < 1500) {
+        return { region: "I", name: "Molto Fredda", interval: "< 1500", vitigni: "Vitigni estremamente precoci." };
+    } else if (huglinIndex < 1800) {
+        return { region: "II", name: "Fredda / Moderata", interval: "1500 – 1800", vitigni: "Müller-Thurgau, Pinot Nero, Riesling." };
+    } else if (huglinIndex < 2100) {
+        return { region: "III", name: "Temperata / Buona", interval: "1800 – 2100", vitigni: "Chardonnay, Merlot, Cabernet Sauvignon (Climi Temperati)." };
+    } else if (huglinIndex < 2400) {
+        return { region: "IV", name: "Calda", interval: "2100 – 2400", vitigni: "Syrah, Grenache, Zinfandel." };
+    } else {
+        return { region: "V", name: "Molto Calda", interval: "≥ 2400", vitigni: "Uve da essiccare (Passito), rischio stress termico." };
+    }
 }

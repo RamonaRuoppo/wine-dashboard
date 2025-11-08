@@ -22,7 +22,6 @@ function SummaryCard({
     badgeColor,
     badgeBg,
     badgeBorder,
-    children,
 }) {
     return (
         <Card className="p-6 bg-white hover:shadow-lg transition-shadow">
