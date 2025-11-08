@@ -1,6 +1,9 @@
 import { Globe, User } from "lucide-react";
+import { useState } from "react";
 
 const Settings = () => {
+    const [showModal, setShowModal] = useState(false);
+
     return (
         <div>
             <h2 className="text-3xl font-semibold mb-4">Impostazioni</h2>
@@ -26,13 +29,33 @@ const Settings = () => {
                         Una volta eliminato l'account, non c'è modo di tornare indietro. Tutti i tuoi dati,
                         inclusi vigneti, raccolti e report verranno eliminati definitivamente.
                     </p>
-                    <button className="delete-button">
+                    <button
+                        className="delete-button"
+                        onClick={() => setShowModal(true)}
+                    >
                         Elimina Account
                     </button>
                 </div>
             </div>
+
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                    <div className="bg-white rounded-lg p-6 w-96 text-center">
+                        <h2 className="text-lg font-semibold mb-4">Eliminazione account</h2>
+                        <p className="mb-6">
+                            Questa funzione è disabilitata per i test. Nessun dato è stato eliminato.
+                        </p>
+                        <button
+                            className="bg-blue-600 text-black px-4 py-2 rounded hover:bg-blue-700"
+                            onClick={() => setShowModal(false)}
+                        >
+                            Chiudi
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
-}
+};
 
 export default Settings;
