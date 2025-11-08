@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
 import { generateVineyardData } from "../data/simulator";
-import { Calendar, CloudRain, Droplet, Droplets, Grape, ShieldAlert, Sun, Thermometer, ThermometerSnowflake, TrendingDown, TrendingUp, Wine, Wrench } from "lucide-react";
-import { calculateDailyGDD, classifyWinkler } from "../utils/climateCalculations";
+import { CloudRain, Droplet, Grape, ShieldAlert, Sun, Thermometer, ThermometerSnowflake, TrendingDown, TrendingUp, Wine, Wrench } from "lucide-react";
+import { calculateHuglinIndex, calculateWinklerIndex, classifyHuglin, classifyWinkler, temperatureSimulator } from "../utils/climateCalculations";
 import MetricCard from "../components/MetricCard";
 import SummaryCard from "../components/SummaryCard";
 import Chart from "../components/Chart";
-
-const data = generateVineyardData(30);
 
 function Overview() {
     const today = new Date().toISOString().split("T")[0];
 
     const [vineyardData, setVineyardData] = useState([]);
     const [selectedDate, setSelectedDate] = useState(today);
-    const [climate, setClimate] = useState({ gdd: 0, winkler: "", gddPercentage: 0 });
+    const [climate, setClimate] = useState({
+        gdd: 0,
+        winkler: { region: "N/A", description: "" },
+        huglin: { region: "N/A", description: "" },
+        gddPercentage: 0
+    });
 
-    // Indici climatici
     const gddHistoric = 1720;
 
     const precipitationCurrent = 285; // mm
     const precipitationHistoric = 340; // mm
     const precipitationDiff = -16; // percentage
-
     const sunHoursCurrent = 1240;
     const sunHoursHistoric = 1150;
     const sunHoursDiff = +8; // percentage
@@ -30,21 +31,31 @@ function Overview() {
     const downTrendIcon = <TrendingDown className="w-4 h-4 text-red-600" />;
 
     useEffect(() => {
-        const data = generateVineyardData(30);
-        setVineyardData(data);
-        const gddHistoric = 1920;
+        const yearlyData = temperatureSimulator(2025);
 
+        // Chiamata che popola la dashboard
+        const thirtyDaysData = generateVineyardData(yearlyData, 365);
+        setVineyardData(thirtyDaysData);
 
-        // calcolo GDD e Winkler
-        const totalGDD = calculateDailyGDD() || 0;
-        const winklerClass = classifyWinkler(totalGDD) || "N/A";
+        // --- Calcoli Winkler (IW) ---
+        const totalGDD = calculateWinklerIndex(yearlyData);
+        const winklerClass = classifyWinkler(totalGDD);
+
+        const gddHistoric = 1972;
         const gddPercentage = ((totalGDD / gddHistoric) * 100).toFixed(0);
+
+        // --- Calcoli Huglin (HI) ---
+        const kFactor = 1.06; // Esempio: Nord Italia
+        const huglinTotal = calculateHuglinIndex(yearlyData, kFactor);
+        const huglinClass = classifyHuglin(huglinTotal);
 
         setClimate({
             gdd: totalGDD.toFixed(0),
             winkler: winklerClass,
+            huglin: huglinClass,
             gddPercentage: gddPercentage,
         });
+
     }, []);
 
     if (!vineyardData.length) return <p>Caricamento dati...</p>
@@ -123,48 +134,31 @@ function Overview() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                {/* GDD - Growing Degree Days */}
-                <SummaryCard //TODO: sistemare dati e progress bar
-                    title="Somma Termica"
-                    subtitle="Growing Degree Days (GDD)"
-                    icon={<Sun className="w-5 h-5 text-orange-500" />}
-                    info="Il GDD misura l'accumulo di calore utile durante la stagione vegetativa. Un valore alto può significare una vendemmia precoce e un grado zuccherino elevato."
-                    value={climate.gdd + " °C/giorni"}
-                    historicValue={gddHistoric}
-                    diff={((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) + "%"}
-                    diffIcon= {((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) > 0 ? upTrendIcon : downTrendIcon}
-                    diffColor={((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) > 0 ? "text-green-600" : "text-red-600"}
-                    progress={climate.gddPercentage}
-                    badgeText={
-                        climate.gddPercentage > 110
-                            ? "Accumulazione Alta"
-                            : climate.gddPercentage > 90
-                                ? "Normale"
-                                : "Bassa"
-                    }
+
+                {/* INDICE DI HUGLIN (HI) */}
+                <SummaryCard
+                    title="Indice Eliotermico"
+                    subtitle={`Classe: ${climate.huglin.region} - ${climate.huglin.name}`}
+                    icon={<Sun className="w-5 h-5 text-yellow-500" />}
+                    info={`L'Indice di Huglin (HI) pondera il calore con le ore di luce. Vocazione: ${climate.huglin.vitigni}`}
+                    value={climate.huglin.interval} // Mostra l'intervallo HI per coerenza
+                    historicValue={"~2000 HI"} // Valore storico di esempio
+                    diff={sunHoursDiff + "%"}
+                    diffIcon={sunHoursDiff > 0 ? upTrendIcon : downTrendIcon}
+                    diffColor={sunHoursDiff > 0 ? "text-green-600" : "text-red-600"}
+                    badgeText={climate.huglin.name}
                     badgeColor={
-                        climate.gddPercentage > 110
-                            ? "text-red-600"
-                            : climate.gddPercentage > 90
-                                ? "text-green-600"
-                                : "text-yellow-600"
+                        climate.huglin.region === "V" || climate.huglin.region === "I" ? "text-red-600" : "text-green-600"
                     }
                     badgeBg={
-                        climate.gddPercentage > 110
-                            ? "bg-red-100"
-                            : climate.gddPercentage > 90
-                                ? "bg-green-100"
-                                : "bg-yellow-100"
+                        climate.huglin.region === "V" || climate.huglin.region === "I" ? "bg-red-100" : "bg-green-100"
                     }
                     badgeBorder={
-                        climate.gddPercentage > 110
-                            ? "border-red-300"
-                            : climate.gddPercentage > 90
-                                ? "border-green-300"
-                                : "border-yellow-300"
+                        climate.huglin.region === "V" || climate.huglin.region === "I" ? "border-red-300" : "border-green-300"
                     }
-                    color="#722F37"
+                    color={"#FFC107"}
                 />
+
                 {/* Precipitazioni */}
                 <SummaryCard
                     title="Indice di Siccità"
@@ -202,13 +196,64 @@ function Overview() {
 
             </div>
 
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mt-8">
+                {/* INDICE DI WINKLER (IW) - Totale GDD */}
+                <SummaryCard
+                    title="Indice di Winkler"
+                    subtitle={`Classe: ${climate.winkler.region} - ${climate.winkler.name}`}
+                    icon={<Sun className="w-5 h-5 text-orange-500" />}
+                    info={`Classificazione climatica basata sulla somma termica (GDD) annuale. Vocazione: ${climate.winkler.description}`}
+                    value={climate.gdd + " °C/giorni"}
+                    historicValue={gddHistoric}
+                    diff={((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) + "%"}
+                    diffIcon={((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) > 0 ? upTrendIcon : downTrendIcon}
+                    diffColor={((climate.gdd - gddHistoric) / gddHistoric * 100).toFixed(1) > 0 ? "text-green-600" : "text-red-600"}
+                    progress={climate.gddPercentage}
+                    badgeText={climate.winkler.name}
+                    badgeColor={
+                        climate.winkler.region === "V" || climate.winkler.region === "I" ? "text-red-600" : "text-green-600"
+                    }
+                    badgeBg={
+                        climate.winkler.region === "V" || climate.winkler.region === "I" ? "bg-red-100" : "bg-green-100"
+                    }
+                    badgeBorder={
+                        climate.winkler.region === "V" || climate.winkler.region === "I" ? "border-red-300" : "border-green-300"
+                    }
+                    color="#722F37"
+                />
 
-            <Chart label="Umidità" dataKey={"humidity"} color="#3B82F6"
-                data={vineyardData.slice(0, 25).map((d, i) => ({
-                    hour: `${String(i).padStart(2, "0")}:00`,
-                    humidity: d.humidity
-                }))}
-            />
+                <Chart
+                    label="Temperatura Media (°C)"
+                    dataKey={"temperature"}
+                    color="#FFA726" 
+                    data={vineyardData.slice(0, 25).map((d, i) => ({
+                        hour: `${String(i).padStart(2, "0")}:00`,
+                        temperature: d.temperature
+                    }))}
+                />
+
+
+                <Chart
+                    label="Umidità"
+                    dataKey={"humidity"}
+                    color="#3B82F6"
+                    data={vineyardData.slice(0, 25).map((d, i) => ({
+                        hour: `${String(i).padStart(2, "0")}:00`,
+                        humidity: d.humidity
+                    }))}
+                />
+
+                <Chart
+                    label="Grado Brix (%)"
+                    dataKey={"sugarLevel"}
+                    color="#8E24AA" // Viola
+                    data={vineyardData.slice(0, 25).map((d, i) => ({
+                        hour: `${String(i).padStart(2, "0")}:00`,
+                        sugarLevel: d.sugarLevel
+                    }))}
+                />
+            </div>
+
 
         </div>
     );

@@ -2,27 +2,32 @@
  * Simulazione di dati climatici + produttivi
  */ 
 
-import { temperatureSimulator } from "../utils/climateCalculations";
-import { calculateDailyGDD } from "../utils/climateCalculations";
+import { calculateDailyGDD, temperatureSimulator } from "../utils/climateCalculations";
 
-export function generateVineyardData(days = 30) {
+export function generateVineyardData(annualTemps, days = 30) {
     const data = [];
     const today = new Date();
-    const temps = temperatureSimulator(); // temperature realistiche giornaliere
-    let cumulativeGDD = 0;
+    const currentYear = today.getFullYear();
+
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - (days - 1));
+    const startOfDayYear = Math.floor((startDate - new Date(currentYear, 0, 1)) / (1000 * 60 * 60 * 24));
 
     for (let i = 0; i < days; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - (days - 1 - i)); // genera date dal passato a oggi
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + i); 
+        
+        const tempIndex = startOfDayYear + i; 
 
-        const { minTemp, maxTemp } = temps[i] || { minTemp: 10, maxTemp: 25 };
+        const tempDay = annualTemps[tempIndex] || { minTemp: 10, maxTemp: 25 };
+        const { minTemp, maxTemp } = tempDay;
+        
         const temperature = parseFloat(((minTemp + maxTemp) / 2).toFixed(1));
-        const dailyGDD = Math.max(temperature - 10, 0);
-        cumulativeGDD += dailyGDD;
-
-        const humidity = parseFloat((Math.random() * 40 + 40).toFixed(1));    // 40–80%
-        const rainfall = parseFloat((Math.random() * 8).toFixed(1));          // 0–8mm
-        const sunlightHours = parseFloat((Math.random() * 6 + 6).toFixed(1)); // 6–12h
+        const dailyGDD = calculateDailyGDD(minTemp, maxTemp, 10);
+        
+        const humidity = parseFloat((Math.random() * 40 + 40).toFixed(1));    
+        const rainfall = parseFloat((Math.random() * 8).toFixed(1));          
+        const sunlightHours = parseFloat((Math.random() * 6 + 6).toFixed(1));
 
         const growthFactor = (temperature / 25) * (humidity / 70) * (1 + rainfall / 10);
         const grapeYield = parseFloat((growthFactor * (Math.random() * 80 + 70)).toFixed(1));
@@ -41,9 +46,12 @@ export function generateVineyardData(days = 30) {
             waterUsed,
             fertilizerUsed,
             dailyGDD: parseFloat(dailyGDD.toFixed(1)),
-            cumulativeGDD: parseFloat(cumulativeGDD.toFixed(1))
         });
     }
 
-    return data;
+    let cumulativeGDD = 0;
+    return data.map(day => {
+        cumulativeGDD += day.dailyGDD;
+        return { ...day, cumulativeGDD: parseFloat(cumulativeGDD.toFixed(1)) };
+    });
 }

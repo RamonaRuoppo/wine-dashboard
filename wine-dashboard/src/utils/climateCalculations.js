@@ -2,39 +2,33 @@
  * Calcoli climatici (GDD, Winkler, stress)
  */ 
 
-// Simulatore per le temperature necessarie al calcolo del GDD
-export function temperatureSimulator(startMonth = 3, endMonth = 10) {
-    const today = new Date();
-    // Stagione di crescita
-    const startOfSeason = new Date(today.getFullYear(), startMonth, 1); // 1 aprile
-    const endOfSeason = new Date(today.getFullYear(), endMonth, 0); // 31 ottobre
-    const days = Math.floor((endOfSeason - startOfSeason) / (1000 * 60 * 60 * 24)) + 1; //conversione in gg
-
+// Simulatore per le temperature
+export function temperatureSimulator(year = new Date().getFullYear()) {
     const temperatures = [];
+    const daysInYear =
+    year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 366 : 365;
 
-    // funzione per generare numeri casuali tra due estremi
-    function randomBetween(min, max) {
+    function randomNumBetween(min, max) {
         return Math.random() * (max - min) + min;
     }
 
-    var prevMax = 20;
-    var prevMin = 10;
-    const smoothFactor = 0.3; // quanto le temperature precedenti influenzano quelle correnti
+    var prevMax = 22;
+    var prevMin = 12;
+    const smoothFactor = 0.3; 
     
-    for (let i = 0; i < days; i++) {
-        const date = new Date(startOfSeason);
-        date.setDate(startOfSeason.getDate() + i);
+    for (let i = 0; i < daysInYear; i++) {
+        const date = new Date(year, 0, i + 1);
 
-        // Simula oscillazioni stagionali (più calde in estate, più fredde a inizio/fine stagione)
-        const seasonalFactor = Math.sin((Math.PI * i) / days);
-        const baseMax = 20 + 10 * seasonalFactor; // varia tra 20°C e 30°C
-        const baseMin = 10 + 5 * seasonalFactor;  // varia tra 10°C e 15°C
+        // Simula oscillazioni stagionali 
+        const seasonalFactor = Math.sin((Math.PI * i) / daysInYear);
+        const baseMax = 20 + 10 * seasonalFactor; 
+        const baseMin = 3 + 8 * seasonalFactor;  
 
         // Variazioni giornaliere naturali
-        const variationMax = randomBetween(-1, 1);
-        const variationMin = randomBetween(-0.5, 0.5);
+        const variationMax = randomNumBetween(-2, 2);
+        const variationMin = randomNumBetween(-1, 1);
 
-        // utlizza il valore precedente per smorzare le oscillazioni tra le temperature
+        // utlizza il valore temp precedente per smorzare le oscillazioni
         const maxTemp = (baseMax + variationMax + (prevMax - baseMax) * smoothFactor).toFixed(1);
         const minTemp = (baseMin + variationMin + (prevMin - baseMin) * smoothFactor).toFixed(1);
 
@@ -58,10 +52,17 @@ export function calculateDailyGDD(minTemp, maxTemp, baseTemp = 10) {
     return Math.max(0, dailyGDD); // il GDD è 0 se la temp media è inferiore alla baseTemp
 }
 
-export function calculateSeasonalGDD(temps, baseTemp = 10) {
-    const totalGDD = temps.reduce((accumulator, day) => {
-        const dailyGDD = calculateDailyGDD(day.minTemp, day.maxTemp, baseTemp);
-        return accumulator + dailyGDD;
+export function calculateWinklerIndex(temperatures, baseTemp = 10) {
+    if (!Array.isArray(temperatures)) return 0;
+    
+    // Filtra per il periodo Winkler: Aprile (4) - Ottobre (10)
+    const winklerTemps = temperatures.filter((day) => {
+        const month = new Date(day.date).getMonth() + 1
+        return month >= 4 && month <= 10;
+    });
+
+    const totalGDD = winklerTemps.reduce((accumulator, day) => {
+        return accumulator + calculateDailyGDD(day.minTemp, day.maxTemp, baseTemp);
     }, 0);
     return totalGDD;
 }
@@ -88,8 +89,16 @@ export function calculateDailyHuglin(minTemp, maxTemp, baseTemp = 10) {
     return Math.max(0, dailyHuglin);
 }
 
-export function calculateHuglinIndex(dailyData, kFactor = 1.06) { // fattore di latitudine Nord Italia
-    const accumulatedGDD = dailyData.reduce((accumulator, day) => {
+export function calculateHuglinIndex(dailyData, kFactor = 1.06) {
+    if (!Array.isArray(dailyData)) return 0;
+
+    // Filtra per il periodo Huglin: Aprile (4) - Settembre (9)
+    const huglinTemps = dailyData.filter((day) => {
+        const month = new Date(day.date).getMonth() + 1
+        return month >= 4 && month <= 9;
+    });
+    
+    const accumulatedGDD = huglinTemps.reduce((accumulator, day) => {
         const dailyHuglinValue = calculateDailyHuglin(day.minTemp, day.maxTemp); 
         return accumulator + dailyHuglinValue;
     }, 0);

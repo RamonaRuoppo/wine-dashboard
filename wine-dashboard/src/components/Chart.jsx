@@ -23,11 +23,10 @@ function Chart({ data = [], dataKey = "value", label, color }) {
                       dataKey="hour"
                       type="category"
                       interval={1}
-                      tick={{ fontSize: 14 }}
+                      tick={{ fontSize: 10 }}
                     />
                     <YAxis />
                     <Tooltip />
-                    <Legend align="right" verticalAlign="bottom"/>
                     <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2} dot={false} activeDot={{ r: 5 }}
                     />
                 </LineChart>
