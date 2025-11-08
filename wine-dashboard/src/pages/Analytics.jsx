@@ -5,6 +5,7 @@ import Card from "../components/card/Card";
 import MetricCard from "../components/MetricCard";
 import { useEffect, useState } from "react";
 import { calculateDailyGDD, classifyWinkler } from "../utils/climateCalculations";
+import RiskCard from "../components/RiskCard";
 
 
 const data = generateVineyardData(30);
@@ -12,6 +13,7 @@ const data = generateVineyardData(30);
 function Analytics() {
     const [vineyardData, setVineyardData] = useState([]);
     const [climate, setClimate] = useState({ gdd: 0, winkler: "", gddPercentage: 0 });
+    const [risk, setRisk] = useState(0);
 
     const latest = vineyardData[vineyardData.length - 1];
 
@@ -29,11 +31,9 @@ function Analytics() {
     useEffect(() => {
         const data = generateVineyardData(30);
         setVineyardData(data);
-        const gddHistoric = 1920;
-
 
         // calcolo GDD e Winkler
-        const totalGDD = calculateDailyGDD() || 0;
+        const totalGDD = data.reduce((acc, d) => acc + d.dailyGDD, 0);
         const winklerClass = classifyWinkler(totalGDD) || "N/A";
         const gddPercentage = ((totalGDD / gddHistoric) * 100).toFixed(0);
 
@@ -42,7 +42,15 @@ function Analytics() {
             winkler: winklerClass,
             gddPercentage: gddPercentage,
         });
+
+        // calcolo rischio fitosanitario
+        const avgHumidity = data.reduce((a, d) => a + d.humidity, 0) / data.length;
+        const avgTemp = data.reduce((a, d) => a + d.temperature, 0) / data.length;
+        const riskValue = Math.min(100, Math.round((avgHumidity / 100) * (avgTemp / 30) * 100));
+
+        setRisk(riskValue);
     }, []);
+
 
 
     return (
@@ -157,38 +165,16 @@ function Analytics() {
 
                     {/* Colonna Destra: Rischio Fitosanitario */}
                     <div className="col-span-2">
-                        <Card className="p-6 bg-white shadow-md">
-                            <div className="flex items-start justify-between mb-3">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="text-sm text-gray-600">Pressione Fitosanitaria</h3>
-                                        <div className="relative inline-block group">
-                                            <Info size={12} className="cursor-pointer" />
-                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 text-xs text-white bg-[#530711e2] rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                Indice sintetico calcolato da modelli predittivi basati su temperatura e umidità. Valuta il rischio di attacchi di patogeni e la necessità di interventi fitosanitari.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p className="text-xs text-gray-500">Rischio Malattie</p>
-                                </div>
-                                <AlertTriangle className="w-5 h-5 text-yellow-500" />
-                            </div>
-
-                            <div className="flex items-center justify-center py-4">
-                                <div className="relative w-24 h-24">
-                                    <Circle size={100} color="#530711e2" />
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <span className="text-2xl text-gray-900">70%</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full border border-yellow-300">
-                                Rischio Medio
-                            </span>
-                            <p className="text-xs text-gray-500 mt-2 text-center">Peronospora, Oidio</p>
-                        </Card>
+                        <RiskCard
+                            title="Pressione Fitosanitaria"
+                            subtitle="Rischio Malattie"
+                            icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
+                            info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
+                            value={risk}
+                            diseases="Peronospora, Oidio"
+                        />
                     </div>
+
                 </div>
             </div>
 

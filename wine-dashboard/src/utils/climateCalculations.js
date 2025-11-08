@@ -1,28 +1,26 @@
 /** 
  * Calcoli climatici (GDD, Winkler, stress)
- */ 
+ */
+
+import { randomNumBetween } from "./statistics";
 
 // Simulatore per le temperature
 export function temperatureSimulator(year = new Date().getFullYear()) {
     const temperatures = [];
     const daysInYear =
-    year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 366 : 365;
-
-    function randomNumBetween(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+        year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 366 : 365;
 
     var prevMax = 22;
     var prevMin = 12;
-    const smoothFactor = 0.3; 
-    
+    const smoothFactor = 0.3;
+
     for (let i = 0; i < daysInYear; i++) {
         const date = new Date(year, 0, i + 1);
 
         // Simula oscillazioni stagionali 
         const seasonalFactor = Math.sin((Math.PI * i) / daysInYear);
-        const baseMax = 20 + 10 * seasonalFactor; 
-        const baseMin = 3 + 8 * seasonalFactor;  
+        const baseMax = 20 + 10 * seasonalFactor;
+        const baseMin = 3 + 8 * seasonalFactor;
 
         // Variazioni giornaliere naturali
         const variationMax = randomNumBetween(-2, 2);
@@ -38,9 +36,9 @@ export function temperatureSimulator(year = new Date().getFullYear()) {
         temperatures.push({
             date,
             minTemp: parseFloat(minTemp),
-            maxTemp: parseFloat(maxTemp)
+            maxTemp: parseFloat(maxTemp),
         });
-        
+
     }
     console.log("temperature della stagione:", temperatures);
     return temperatures;
@@ -54,7 +52,7 @@ export function calculateDailyGDD(minTemp, maxTemp, baseTemp = 10) {
 
 export function calculateWinklerIndex(temperatures, baseTemp = 10) {
     if (!Array.isArray(temperatures)) return 0;
-    
+
     // Filtra per il periodo Winkler: Aprile (4) - Ottobre (10)
     const winklerTemps = temperatures.filter((day) => {
         const month = new Date(day.date).getMonth() + 1
@@ -97,9 +95,9 @@ export function calculateHuglinIndex(dailyData, kFactor = 1.06) {
         const month = new Date(day.date).getMonth() + 1
         return month >= 4 && month <= 9;
     });
-    
+
     const accumulatedGDD = huglinTemps.reduce((accumulator, day) => {
-        const dailyHuglinValue = calculateDailyHuglin(day.minTemp, day.maxTemp); 
+        const dailyHuglinValue = calculateDailyHuglin(day.minTemp, day.maxTemp);
         return accumulator + dailyHuglinValue;
     }, 0);
 
@@ -119,4 +117,16 @@ export function classifyHuglin(huglinIndex) {
     } else {
         return { region: "V", name: "Molto Calda", interval: "≥ 2400", vitigni: "Uve da essiccare (Passito), rischio stress termico." };
     }
+}
+
+export function calculateStress(temperatures) {
+    let heatStressDays = 0;
+    let droughtStressDays = 0;
+
+    temperatures.forEach(day => {
+        if (day.maxTemp > 35) heatStressDays++;
+        if (day.maxTemp > 30 && day.rainfall < 1) droughtStressDays++;
+    });
+
+    return { heatStressDays, droughtStressDays };
 }

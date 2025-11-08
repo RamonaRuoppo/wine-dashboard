@@ -58,7 +58,9 @@ function Overview() {
 
     }, []);
 
-    if (!vineyardData.length) return <p>Caricamento dati...</p>
+    if (!Array.isArray(vineyardData) || vineyardData.length === 0) {
+        return <p>Caricamento dati...</p>;
+    }
 
     const selectedData =
         vineyardData.find((d) => d.date === selectedDate) ||
@@ -225,7 +227,7 @@ function Overview() {
                 <Chart
                     label="Temperatura Media (°C)"
                     dataKey={"temperature"}
-                    color="#FFA726" 
+                    color="#FFA726"
                     data={vineyardData.slice(0, 25).map((d, i) => ({
                         hour: `${String(i).padStart(2, "0")}:00`,
                         temperature: d.temperature
