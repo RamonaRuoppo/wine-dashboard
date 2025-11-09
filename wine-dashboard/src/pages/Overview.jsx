@@ -7,6 +7,7 @@ import SummaryCard from "../components/SummaryCard";
 import Chart from "../components/Chart";
 
 function Overview() {
+    const title = "Overview";
     const today = new Date().toISOString().split("T")[0];
 
     const [vineyardData, setVineyardData] = useState([]);
@@ -69,7 +70,7 @@ function Overview() {
     return (
         <div>
             <div className="flex items-center justify-between">
-                <p className="text-3xl font-semibold mb-4">Overview</p>
+                <p className="text-3xl font-semibold mb-6">{title}</p>
                 <input
                     type="date"
                     value={selectedDate}
@@ -79,7 +80,7 @@ function Overview() {
                             transition-shadow shadow-sm cursor-pointer"
                 />
             </div>
-
+            
             {/* Indici Agronomici e Climatici */}
 
             <div className="flex items-center gap-3 mb-6">

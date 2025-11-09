@@ -27,7 +27,7 @@ const Settings = () => {
 
             <div className="space-y-4">
                 <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
-                    <label htmlFor="startDate" className="text-sm text-gray-500 mb-2">Nome Azienda</label>
+                    <label className="text-sm text-gray-500 mb-2">Nome Azienda</label>
                     <h3 className="text-black-900 mb-4 pl-2 mt-1">Antinori</h3>
                     <div className="relative w-80 mb-2">
                         <select

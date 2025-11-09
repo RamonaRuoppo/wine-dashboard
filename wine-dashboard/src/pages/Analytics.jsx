@@ -7,10 +7,18 @@ import { useEffect, useState } from "react";
 import { calculateDailyGDD, classifyWinkler } from "../utils/climateCalculations";
 import RiskCard from "../components/RiskCard";
 
+{/* 
+    TODO:
+        Grafici dettagliati (Temperatura, Umidità, Pioggia, Sole)
+        Indici climatici (GDD, Huglin, Winkler)
+        Eventi estremi (ondate di calore, gelate, piogge intense)
+        Fattori di rischio
+*/}
 
 const data = generateVineyardData(30);
 
 function Analytics() {
+    const title = "Analytics";
     const [vineyardData, setVineyardData] = useState([]);
     const [climate, setClimate] = useState({ gdd: 0, winkler: "", gddPercentage: 0 });
     const [risk, setRisk] = useState(0);
@@ -55,7 +63,7 @@ function Analytics() {
 
     return (
         <div>
-            <h2 className="text-3xl font-semibold mb-4">Analytics</h2>
+            <h2 className="text-3xl font-semibold mb-4">{title}</h2>
             <p className="text-gray-500 mb-6">Qui è possibile visualizzare diversi dati e insights riguarto il tuo vigneto.</p>
             {/* Filtri */}
             <div className="flex items-center gap-3 mb-6 mt-6">

@@ -1,6 +1,4 @@
-/** 
- * Calcoli climatici (GDD, Winkler, stress)
- */
+// --- Calcoli climatici (GDD, Winkler, stress) ---
 
 import { randomNumBetween } from "./statistics";
 

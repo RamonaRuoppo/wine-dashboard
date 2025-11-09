@@ -1,6 +1,4 @@
-/**
- * Simulazione di dati climatici + produttivi
- */
+// --- Simulazione di dati climatici + produttivi ---
 
 import { calculateDailyGDD } from "../utils/climateCalculations";
 
