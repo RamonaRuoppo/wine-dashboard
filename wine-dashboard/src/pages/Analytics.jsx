@@ -64,7 +64,6 @@ function Analytics() {
     return (
         <div>
             <h2 className="text-3xl font-semibold mb-4">{title}</h2>
-            <p className="text-gray-500 mb-6">Qui è possibile visualizzare diversi dati e insights riguarto il tuo vigneto.</p>
             {/* Filtri */}
             <div className="flex items-center gap-3 mb-6 mt-6">
                 <ChartBar className="w-6 h-6 text-[#722F37]"></ChartBar>

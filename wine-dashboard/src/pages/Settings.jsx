@@ -15,10 +15,7 @@ const Settings = () => {
 
     return (
         <div>
-            <h2 className="text-3xl font-semibold mb-4">Impostazioni</h2>
-            <p className="text-gray-500 text-sm mb-6">
-                Gestisci il tuo account e le preferenze dell'applicazione.
-            </p>
+            <h2 className="text-3xl font-semibold mb-6">Impostazioni</h2>
 
             <div className="flex items-center gap-3 mb-4">
                 <User className="w-5 h-5 text-[#722F37]" />
@@ -66,10 +63,11 @@ const Settings = () => {
 
             <div className="flex items-center gap-3 mb-4">
                 <Globe className="w-5 h-5 text-[#722F37]" />
-                <h2 className="text-gray-900">Parametri di Simulazione stagionale</h2>
+                <h2 className="text-gray-900">Parametri Stagionali</h2>
             </div>
 
             <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 space-y-4">
+                <h3 className="text-sm text-gray-600">Seleziona le date di inizio e fine per reimpostare i parametri della finestra stagionale.</h3>
                 <div className="w-80">
                     <label htmlFor="startDate" className="text-sm text-gray-500">Data inizio</label>
                     <input
@@ -91,11 +89,11 @@ const Settings = () => {
                     />
                 </div>
                 <button
-                    className="text-black px-4 py-2 rounded hover:bg-[#5b252c] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-2 text-black px-4 py-2 rounded hover:bg-[#5b252c] transition disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleGenerateData}
                     disabled={!startDate || !endDate}
                 >
-                    Rigenera dati simulati
+                    Reimposta periodo
                 </button>
             </div>
 
