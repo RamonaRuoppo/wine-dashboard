@@ -1,6 +1,7 @@
 function Logistic () {
     return (
-        <div className="w-screen h-screen p-4 text-gray-800">
+       <div>
+            <h2 className="text-3xl font-semibold mb-4">Logistica</h2>
             
         </div>
     );

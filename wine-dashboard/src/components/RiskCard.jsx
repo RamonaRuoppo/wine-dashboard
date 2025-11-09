@@ -1,3 +1,4 @@
+import { AlignCenter } from "lucide-react";
 import Card from "./card/Card";
 import CardHeader from "./card/CardHeader";
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
@@ -19,16 +20,21 @@ function RiskCard({ title, subtitle, icon, info, value, diseases }) {
                 info={info}
             />
 
-            <CircularProgressbar className="mb-4 mt-4 w-30 h-30"
-                value={value}
-                text={value + "%"}
-                styles={buildStyles({
-                    textSize: "16px",
-                    pathColor: value < 30 ? "green" : value < 70 ? "orange" : "red",
-                    textColor: "#333",
-                    trailColor: "#eee",
-                })}
-            />
+            <div style={{ width: 100, height: 100 }}>
+                <CircularProgressbar className="mb-4 mt-4 "
+                    value={value}
+                    text={value + "%"}
+                    styles={buildStyles({
+                        rotation: 0.25,
+                        strokeLinecap: 'butt',
+                        pathTransitionDuration: 0.5,
+                        textSize: "16px",
+                        pathColor: value < 30 ? "green" : value < 70 ? "orange" : "red",
+                        textColor: "#333",
+                        trailColor: "#eee",
+                    })}
+                />
+            </div>
 
             {/* Badge rischio */}
             <span

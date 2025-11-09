@@ -1,8 +1,17 @@
-import { ChevronDown, Globe, User } from "lucide-react";
+import { ChevronDown, Globe, Star, User } from "lucide-react";
 import { useState } from "react";
+import Modal from "../components/Modal";
 
 const Settings = () => {
-    const [showModal, setShowModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showGenerateModal, setShowGenerateModal] = useState(false);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+
+    const handleGenerateData = () => {
+        setShowGenerateModal(true);
+        console.log(`Generating simulated data from ${startDate} to ${endDate}`);
+    };
 
     return (
         <div>
@@ -11,17 +20,15 @@ const Settings = () => {
                 Gestisci il tuo account e le preferenze dell'applicazione.
             </p>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-4">
                 <User className="w-5 h-5 text-[#722F37]" />
                 <h2 className="text-gray-900">Informazioni Profilo</h2>
             </div>
 
             <div className="space-y-4">
                 <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
-                    <p className="text-sm text-gray-400 mb-2">
-                        Nome Azienda
-                    </p>
-                    <h3 className="text-black-900 mb-4 pl-2">Antinori</h3>
+                    <label htmlFor="startDate" className="text-sm text-gray-500 mb-2">Nome Azienda</label>
+                    <h3 className="text-black-900 mb-4 pl-2 mt-1">Antinori</h3>
                     <div className="relative w-80 mb-2">
                         <select
                             defaultValue="Antinori"
@@ -29,7 +36,7 @@ const Settings = () => {
 
                         >
                             {/* TODO: fix options */}
-                            <option value="2025">Tenuta 1</option> 
+                            <option value="2025">Tenuta 1</option>
                             <option value="2024">Tenuta 2</option>
                             <option value="2023">Tenuta 3</option>
                         </select>
@@ -41,17 +48,55 @@ const Settings = () => {
             </div>
 
             {/* Preferences */}
-            <div className="flex items-center gap-3 mb-6">
-                <Globe className="w-5 h-5 text-[#722F37]" />
+            {/* <div className="flex items-center gap-3 mb-4">
+                <Star className="w-5 h-5 text-[#722F37]" />
                 <h2 className="text-gray-900">Preferenze</h2>
             </div>
+            */}
 
+            {/* 
             <div className="space-y-4">
                 <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
                     <p className="text-sm text-gray-400">
-                        Altre info {/* TODO: aggiungere informazioni qui */}
+                        Altre info 
                     </p>
                 </div>
+            </div> 
+            */}
+
+            <div className="flex items-center gap-3 mb-4">
+                <Globe className="w-5 h-5 text-[#722F37]" />
+                <h2 className="text-gray-900">Parametri di Simulazione stagionale</h2>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 space-y-4">
+                <div className="w-80">
+                    <label htmlFor="startDate" className="text-sm text-gray-500">Data inizio</label>
+                    <input
+                        id="startDate"
+                        type="date"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                </div>
+                <div className="w-80">
+                    <label htmlFor="endDate" className="text-sm text-gray-500">Data fine</label>
+                    <input
+                        id="endDate"
+                        type="date"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
+                </div>
+                <button
+                    className="text-black px-4 py-2 rounded hover:bg-[#5b252c] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handleGenerateData}
+                    disabled={!startDate || !endDate}
+                >
+                    Rigenera dati simulati
+                </button>
             </div>
 
             <div className="space-y-4">
@@ -63,28 +108,34 @@ const Settings = () => {
                     </p>
                     <button
                         className="delete-button"
-                        onClick={() => setShowModal(true)}
+                        onClick={() => setShowDeleteModal(true)}
                     >
                         Elimina Account
                     </button>
                 </div>
             </div>
 
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-                    <div className="bg-white rounded-lg p-6 w-96 text-center">
-                        <h2 className="text-lg font-semibold mb-4">Eliminazione account</h2>
-                        <p className="mb-6">
-                            Questa funzione è disabilitata per i test. Nessun dato è stato eliminato.
-                        </p>
-                        <button
-                            className="bg-blue-600 text-black px-4 py-2 rounded hover:bg-blue-700"
-                            onClick={() => setShowModal(false)}
-                        >
-                            Chiudi
-                        </button>
-                    </div>
-                </div>
+            {showGenerateModal && (
+                <Modal
+                    show={showGenerateModal}
+                    title="Rigenerazione dati"
+                    message={`Vuoi rigenerare i dati simulati dal ${startDate} al ${endDate}?`}
+                    onConfirm={"confirm"}
+                    onClose={() => setShowGenerateModal(false)}
+                    confirmText="Conferma"
+                    cancelText="Annulla"
+                />
+
+            )}
+
+            {showDeleteModal && (
+                <Modal
+                    show={showDeleteModal}
+                    title="Eliminazione account"
+                    message="Questa funzione è disabilitata per i test. Nessun dato è stato eliminato."
+                    onClose={() => setShowDeleteModal(false)}
+                    cancelText="Chiudi"
+                />
             )}
         </div>
     );
