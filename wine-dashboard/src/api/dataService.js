@@ -1,7 +1,7 @@
 import { randomNumBetween } from "../utils/statistics";
 import { vineyardList } from "../data/mockData";
 
-export function generatePlanningData() {
+export function fetchPlanningData() {
     return vineyardList.map(v => ({
         vineyard: v.name,
         variety: v.variety,
@@ -12,7 +12,7 @@ export function generatePlanningData() {
     }));
 }
 
-export function generateTransportData(days = 7) {
+export function fetchTransportData(days = 7) {
     return Array.from({ length: days }, (_, i) => {
         const uva = randomNumBetween(8, 18);
         const km = randomNumBetween(5, 12);

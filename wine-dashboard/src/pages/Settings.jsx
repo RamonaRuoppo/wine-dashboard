@@ -1,6 +1,7 @@
 import { ChevronDown, Globe, Star, User } from "lucide-react";
 import { useState } from "react";
 import Modal from "../components/Modal";
+import { vineyardList } from "../data/mockData";
 
 const Settings = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -19,23 +20,23 @@ const Settings = () => {
 
             <div className="flex items-center gap-3 mb-4">
                 <User className="w-5 h-5 text-[#722F37]" />
-                <h2 className="text-gray-900">Informazioni Profilo</h2>
+                <h2 className="text-gray-900">Informazioni Overview</h2>
             </div>
 
             <div className="space-y-4">
                 <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
                     <label className="text-sm text-gray-500 mb-2">Nome Azienda</label>
                     <h3 className="text-black-900 mb-4 pl-2 mt-1">Antinori</h3>
-                    <div className="relative w-80 mb-2">
+                    <div className="relative w-130 mb-2">
                         <select
                             defaultValue="Antinori"
                             className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
-
                         >
-                            {/* TODO: fix options */}
-                            <option value="2025">Tenuta 1</option>
-                            <option value="2024">Tenuta 2</option>
-                            <option value="2023">Tenuta 3</option>
+                            {vineyardList.map((v) => (
+                                <option key={v.name} value={v.name}>
+                                    {v.name} – {v.variety}
+                                </option>
+                            ))}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                             <ChevronDown className="w-5 h-5 text-gray-400" />

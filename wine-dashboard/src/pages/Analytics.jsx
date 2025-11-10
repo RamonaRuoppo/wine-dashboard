@@ -1,10 +1,12 @@
 import { Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart } from "recharts";
-import { generateVineyardData } from "../data/simulator";
-import { AlertTriangle, ChartBar, ChevronDown, Circle, CloudRain, Droplet, Info, Sunrise } from "lucide-react";
+import { fetchVineyardData } from "../data/simulator";
+import { AlertTriangle, ChartBar, ChevronDown, Circle, CloudRain, Droplet, Euro, Globe, Info, Sunrise, TrendingUp } from "lucide-react";
 import MetricCard from "../components/MetricCard";
 import { useEffect, useState } from "react";
 import { classifyWinkler } from "../utils/climateCalculations";
 import RiskCard from "../components/RiskCard";
+import Card from "../components/card/Card";
+import { vineyardList } from "../data/mockData";
 
 {/* 
     TODO:
@@ -14,7 +16,7 @@ import RiskCard from "../components/RiskCard";
         Fattori di rischio
 */}
 
-const data = generateVineyardData(30);
+const data = fetchVineyardData(30);
 
 function Analytics() {
     const title = "Analytics";
@@ -36,7 +38,7 @@ function Analytics() {
 
 
     useEffect(() => {
-        const data = generateVineyardData(30);
+        const data = fetchVineyardData(30);
         setVineyardData(data);
 
         // calcolo GDD e Winkler
@@ -111,19 +113,21 @@ function Analytics() {
                 </div>
 
                 {/* Vigneto */}
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-2 min-w-[200px]">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Vigneto
                     </label>
                     <div className="relative w-full">
                         <select
-                            defaultValue="all"
+                            defaultValue="Antinori"
                             className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200 shadow-sm"
+
                         >
-                            <option value="all">Tutti</option>
-                            <option value="sangiovese">Sangiovese</option>
-                            <option value="merlot">Merlot</option>
-                            <option value="trebbiano">Trebbiano</option>
+                            {vineyardList.map((v) => (
+                                <option key={v.name} value={v.name}>
+                                    {v.name} – {v.variety}
+                                </option>
+                            ))}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                             <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -182,6 +186,42 @@ function Analytics() {
                     </div>
 
                 </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+                <Card className="flex items-center">
+                    <div className="flex gap-2 items-center">
+                        <Euro className="w-8 h-8 text-[#722F37]" />
+                        <p className="text-xl text-gray-500">Costo Primo Uva ({2025})</p>
+                    </div>
+
+                    <div>
+                        <p className="text-2xl font-extrabold text-gray-900">€{20} <span className="text-lg font-normal">/ Q.le</span></p>
+                    </div>
+                </Card>
+
+                <Card className={`flex items-center`}>
+                    <div className="flex gap-2 items-center">
+                        <Globe className="w-8 h-8 text-gray-600" />
+                        <p className="text-xl text-gray-500">Water Footprint Attuale</p>
+                    </div>
+                    <div>
+                        <p className="text-2xl font-extrabold text-gray-900">{200} <span className="text-lg font-normal">L/L</span></p>
+                        <p className={`text-xs text-red-700`}>Target VIVA: {200} L/L</p>
+                    </div>
+                </Card>
+
+                <Card className={`flex items-center`}>
+                    <div className="flex gap-2 items-center">
+                        <TrendingUp className="w-8 h-8 text-gray-400" />
+                        <p className="text-xl text-gray-500">Varianza Costo/Q.le vs {2025 - 1}</p>
+                    </div>
+                    <div>
+                        <p className="text-2xl font-extrabold text-gray-900">{10}%</p>
+                        <p className="text-xs text-gray-500">{10 > 0 ? 'Aumento Costi operativi' : 'Miglioramento Efficienza Costi'}</p>
+                    </div>
+                </Card>
+
             </div>
 
             <LineChart width={800} height={400} data={data}>

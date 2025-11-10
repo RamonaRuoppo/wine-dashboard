@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { generateVineyardData } from "../data/simulator";
+import { fetchVineyardData } from "../data/simulator";
 import { CloudRain, Droplet, Grape, ShieldAlert, Sun, Thermometer, ThermometerSnowflake, TrendingDown, TrendingUp, Wine, Wrench } from "lucide-react";
 import { calculateHuglinIndex, calculateWinklerIndex, classifyHuglin, classifyWinkler, temperatureSimulator } from "../utils/climateCalculations";
 import MetricCard from "../components/MetricCard";
@@ -37,7 +37,7 @@ function Overview() {
         const yearlyData = temperatureSimulator(2025);
 
         // Chiamata che popola la dashboard
-        const thirtyDaysData = generateVineyardData(yearlyData, 365);
+        const thirtyDaysData = fetchVineyardData(yearlyData, 365);
         setVineyardData(thirtyDaysData);
 
         // --- Calcoli Winkler (IW) ---
@@ -223,15 +223,6 @@ function Overview() {
                     color={isDark ? "#dededeff" : "#888888ff"}
                 />
 
-                <Chart
-                    label="Temperatura Media (°C)"
-                    dataKey={"temperature"}
-                    color="#FFA726"
-                    data={vineyardData.slice(0, 25).map((d, i) => ({
-                        hour: `${String(i).padStart(2, "0")}:00`,
-                        temperature: d.temperature
-                    }))}
-                />
 
 
                 <Chart

@@ -2,11 +2,11 @@ import { CalendarArrowDown, ColumnsSettings } from "lucide-react";
 import Card from "../components/card/Card";
 import MetricCard from "../components/MetricCard";
 import { Legend, Line, LineChart, XAxis, YAxis } from "recharts";
-import { generatePlanningData, generateTransportData } from "../api/dataService";
+import { fetchPlanningData, fetchTransportData } from "../api/dataService";
 
 function Logistic() {
-    const planningData = generatePlanningData();
-    const transportData = generateTransportData(7);
+    const planningData = fetchPlanningData();
+    const transportData = fetchTransportData(7);
 
     return (
         <div>

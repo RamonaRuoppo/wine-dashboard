@@ -1,5 +1,4 @@
-// --- Calcoli produttivi e statistici (trend, medie, variazioni) ---
-
+// --- Calcoli produttivi e statistici ---
 
 export function safeValue(value) {
     return (typeof value === "number" && value >= 0) ? value : 0;

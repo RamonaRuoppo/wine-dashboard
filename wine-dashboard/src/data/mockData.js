@@ -3,3 +3,5 @@ export const vineyardList = [
     { name: "Badia a Passignano", variety: "Chianti Classico DOCG Gran Selezione" },
     { name: "Pèppoli", variety: "Chianti Classico DOCG" },
 ];
+
+export const kFactor = 1.06;

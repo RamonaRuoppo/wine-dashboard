@@ -2,7 +2,7 @@
 
 import { calculateDailyGDD } from "../utils/climateCalculations";
 
-export function generateVineyardData(annualTemps, days = 30) {
+export function fetchVineyardData(annualTemps, days = 30) {
     const data = [];
     const today = new Date();
     const currentYear = today.getFullYear();
