@@ -1,10 +1,9 @@
 import { Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart } from "recharts";
 import { generateVineyardData } from "../data/simulator";
 import { AlertTriangle, ChartBar, ChevronDown, Circle, CloudRain, Droplet, Info, Sunrise } from "lucide-react";
-import Card from "../components/card/Card";
 import MetricCard from "../components/MetricCard";
 import { useEffect, useState } from "react";
-import { calculateDailyGDD, classifyWinkler } from "../utils/climateCalculations";
+import { classifyWinkler } from "../utils/climateCalculations";
 import RiskCard from "../components/RiskCard";
 
 {/* 
