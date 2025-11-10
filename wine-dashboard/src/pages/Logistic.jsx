@@ -5,6 +5,7 @@ import { Legend, Line, LineChart, XAxis, YAxis } from "recharts";
 
 {/* 
     TODO:
+    simulare transportData 
         Resa uva per varietà
         Livelli zuccheri (Brix) e maturazione
         Efficienza del raccolto (resa vs input)
@@ -28,11 +29,52 @@ function Logistic() {
                 <h2 className="text-lg font-semibold text-gray-700">Pianificazione della Vendemmia</h2>
             </div>
 
-            <Card className="mb-6" title="Pianificazione Vendemmia">
-                <p>Calendario raccolta per parcella</p>
-                <p>Stato maturazione: 85%</p>
-                <p>Data ottimale: 15 Settembre</p>
-            </Card>
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Vigneto</th>
+                            <th scope="col" class="px-6 py-3">Varietà</th>
+                            <th scope="col" class="px-6 py-3">Stato maturazione</th>
+                            <th scope="col" class="px-6 py-3">Data ottimale</th>
+                            <th scope="col" class="px-6 py-3">Risorse necessarie</th>
+                            <th scope="col" class="px-6 py-3">Quantità stimata</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                Tignanello
+                            </th>
+                            <td class="px-6 py-4">Chianti Classico DOCG Riserva</td>
+                            <td class="px-6 py-4">85% (Brix 23.8)</td>
+                            <td class="px-6 py-4">12 Settembre</td>
+                            <td class="px-6 py-4">8 persone, 2 macchine</td>
+                            <td class="px-6 py-4">10 t</td>
+                        </tr>
+                        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                Badia a Passignano
+                            </th>
+                            <td class="px-6 py-4">Chianti Classico DOCG Gran Selezione</td>
+                            <td class="px-6 py-4">78% (Brix 22.5)</td>
+                            <td class="px-6 py-4">15 Settembre</td>
+                            <td class="px-6 py-4">6 persone, 1 macchina</td>
+                            <td class="px-6 py-4">8 t</td>
+                        </tr>
+                        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                Pèppoli
+                            </th>
+                            <td class="px-6 py-4">Chianti Classico DOCG</td>
+                            <td class="px-6 py-4">90% (Brix 24.2)</td>
+                            <td class="px-6 py-4">18 Settembre</td>
+                            <td class="px-6 py-4">10 persone, 3 macchine</td>
+                            <td class="px-6 py-4">12 t</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div className="flex items-center gap-3 mb-6">
                 <CalendarArrowDown className="w-6 h-6 text-[#722F37]" />
@@ -44,7 +86,7 @@ function Logistic() {
                 <LineChart width={"100%"} height={200} data={transportData}>
                     <XAxis dataKey="giorno" />
                     <YAxis />
-                    <Legend/>
+                    <Legend />
                     <Line type="monotone" dataKey="uvaTrasportata" stroke="#722F37" />
                     <Line type="monotone" dataKey="kmPercorsi" stroke="#2f3772ff" />
                     <Line type="monotone" dataKey="oreLavoro" stroke="#2f723cff" />
