@@ -12,7 +12,7 @@ import {
 function Chart({ data = [], dataKey = "value", label, color }) {
 
     return (
-        <div className="bg-white p-4 rounded-lg shadow w-full h-full">
+        <div className="bg-white p-4 rounded-xl shadow w-full h-full">
             <h3 className="text-2sm text-gray-600 mb-2">
                 Andamento {label} Giornaliero (%)
             </h3>

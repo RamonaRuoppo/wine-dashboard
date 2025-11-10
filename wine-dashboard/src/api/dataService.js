@@ -1,5 +1,7 @@
 // Accesso a dati storici e simulati
 
+import { randomNumBetween } from "../utils/statistics";
+
 const historicalAgronomyData = [
     { year: 2025, vineyard: "Tignanello", gdd: 1950, rainfall: 285, brix: 20.5, productivity: 85 },
     { year: 2024, vineyard: "Tignanello", gdd: 1890, rainfall: 285, brix: 20.5, productivity: 85 },
@@ -13,11 +15,11 @@ const historicalAgronomyData = [
     { year: 2022, vineyard: "Badia a Passignano", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
     { year: 2021, vineyard: "Badia a Passignano", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
 
-    { year: 2025, vineyard: "Pian delle Vigne", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
-    { year: 2024, vineyard: "Pian delle Vigne", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
-    { year: 2023, vineyard: "Pian delle Vigne", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
-    { year: 2022, vineyard: "Pian delle Vigne", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
-    { year: 2021, vineyard: "Pian delle Vigne", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
+    { year: 2025, vineyard: "Pèppoli", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
+    { year: 2024, vineyard: "Pèppoli", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
+    { year: 2023, vineyard: "Pèppoli", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
+    { year: 2022, vineyard: "Pèppoli", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
+    { year: 2021, vineyard: "Pèppoli", gdd: 1850, rainfall: 285, brix: 20.5, productivity: 85 },
 ];
 
 const financialData = [
@@ -60,4 +62,35 @@ export const fetchKPIData = async (yearFilter, vineyardFilter) => {
                 gdd_prev: prevYearData.gdd
             } : null,
     };
+}
+
+export function generatePlanningData() {
+  const vineyards = [
+    { name: "Tignanello", variety: "Chianti Classico DOCG Riserva" },
+    { name: "Badia a Passignano", variety: "Chianti Classico DOCG Gran Selezione" },
+    { name: "Pèppoli", variety: "Chianti Classico DOCG" },
+  ];
+  
+  return vineyards.map(v => ({
+    vineyard: v.name,
+    variety: v.variety,
+    maturation_status: `${randomNumBetween(75, 95)}% (Brix ${ (Math.random() * (25 - 22) + 22).toFixed(1) })`,
+    optimal_date: `${randomNumBetween(12, 20)}/09`,
+    resources: `${randomNumBetween(5, 10)} persone, ${randomNumBetween(1, 3)} macchine`,
+    estimated_quantity: `${randomNumBetween(8, 15)} t`,
+  }));
+}
+
+export function generateTransportData(giorni = 7) {
+  return Array.from({ length: giorni }, (_, i) => {
+    const uva = randomNumBetween(8, 18);
+    const km = randomNumBetween(5, 12);
+    const ore = Math.ceil(uva / 3);
+    return {
+      giorno: `0${i+1}/09`,
+      uvaTrasportata: uva,
+      kmPercorsi: km,
+      oreLavoro: ore,
+    };
+  });
 }

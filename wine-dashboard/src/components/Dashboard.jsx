@@ -10,10 +10,10 @@ const Dashboard = ({onLogout}) => {
     return (
       <div className="w-screen h-screen p-4 text-gray-800">
         <div className="w-full h-full flex gap-4">
-          <div className="bg-gradient-to-b from-[#722F37] to-[#5A2530] text-white rounded-2xl shadow-md w-64 p-4 flex flex-col">
+          <div className="bg-gradient-to-b from-[#722F37] to-[#5A2530] text-white rounded-xl shadow-md w-64 p-4 flex flex-col">
             <Sidebar onLogout={onLogout} />
           </div>
-          <main className="flex-1 bg-gray-100 rounded-2xl shadow-md p-6 overflow-auto">
+          <main className="flex-1 bg-gray-100 dark:bg-gray-200 rounded-xl shadow-md p-6 overflow-auto">
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/analytics" element={<Analytics />} />

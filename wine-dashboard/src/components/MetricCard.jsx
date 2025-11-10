@@ -6,12 +6,12 @@ function MetricCard({
     valueColor,
     icon,
     unit,
-    trend
+    trend,
 }) {
     return (
-        <Card title={title} icon={icon} className="w-full">
+        <Card title={title} icon={icon} className="w-full even:dark:bg-gray-800 border-b dark:border-gray-700 dark:bg-gray-800">
             <div className="flex flex-col text-center">
-                <p className={`text-3xl font-bold ${valueColor ? valueColor : "text-[#722F37]"}`}>
+                <p className={`text-3xl font-bold ${valueColor ? valueColor : "text-[#722F37] dark:text-gray-200"}`}>
                     {value} {unit && <span className="text-sm">{unit}</span>}
                 </p>
                 {trend && (

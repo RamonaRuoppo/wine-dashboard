@@ -32,7 +32,7 @@ function Card({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             {icon && <div>{icon}</div>}
-            {title && <h3 className="text-sm font-semibold text-gray-700">{title}</h3>}
+            {title && <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{title}</h3>}
           </div>
           {infoText && (
             <div className="relative inline-block group">

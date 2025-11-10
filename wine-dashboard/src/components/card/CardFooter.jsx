@@ -16,14 +16,14 @@ function CardFooter({
             )}
 
             {progress !== undefined && (
-                <hr className="border-t border-gray-200 my-4" />
+                <hr className="border-t border-gray-200 dark:border-gray-700 my-4" />
             )}
 
             {progress !== undefined && (
                 <div className="flex flex-col items-center gap-1 mb-4 mt-2" >
-                    <p className="text-xs text-gray-500 mb-1 w-full">Avanzamento Accumulo Termico:</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-300 mb-1 w-full">Avanzamento Accumulo Termico:</p>
                     <progress value={progress} max="100" className="progress-bar w-full" />
-                    <p className="text-xs text-gray-500 mb-1">{Math.min(progress, 100)}%</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-300 mb-1">{Math.min(progress, 100)}%</p>
                 </div>
             )}
         </>

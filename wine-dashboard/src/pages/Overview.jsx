@@ -30,6 +30,8 @@ function Overview() {
 
     const upTrendIcon = <TrendingUp className="w-4 h-4 text-green-600" />;
     const downTrendIcon = <TrendingDown className="w-4 h-4 text-red-600" />;
+    const isDark = document.documentElement.classList.contains("dark");
+
 
     useEffect(() => {
         const yearlyData = temperatureSimulator(2025);
@@ -75,12 +77,12 @@ function Overview() {
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="bg-white border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-700 
+                    className="bg-white border border-gray-300 rounded-xl px-2 py-1 text-sm text-gray-700 
                             focus:outline-none focus:ring-2 focus:ring-[#722F37] focus:border-[#722F37] 
                             transition-shadow shadow-sm cursor-pointer"
                 />
             </div>
-            
+
             {/* Indici Agronomici e Climatici */}
 
             <div className="flex items-center gap-3 mb-6">
@@ -94,7 +96,6 @@ function Overview() {
                     value={selectedData.temperature}
                     unit="°C"
                     icon={<ThermometerSnowflake className="text-orange-400" />}
-                    valueColor={"text-gray-600"}
                 />
 
                 <MetricCard
@@ -102,7 +103,6 @@ function Overview() {
                     unit={"%"}
                     value={selectedData.sugarLevel} //TODO: gestire gradi brix
                     icon={<Wine className="text-red-400" />}
-                    valueColor={"text-gray-600"}
                 />
 
                 <MetricCard
@@ -110,13 +110,11 @@ function Overview() {
                     value={selectedData.grapeYield}
                     unit="Q.li/Ha"
                     icon={<Grape className="text-purple-400" />}
-                    valueColor={"text-gray-600"}
                 />
 
                 <MetricCard
                     title="Uso Idrico"
                     value={selectedData.waterUsed} //TODO: gestire uso 
-                    valueColor={"text-gray-600"}
                     unit={"L/L"}
                     icon={<Droplet className="text-blue-400" />}
                 />
@@ -222,7 +220,7 @@ function Overview() {
                     badgeBorder={
                         climate.winkler.region === "V" || climate.winkler.region === "I" ? "border-red-300" : "border-green-300"
                     }
-                    color="#722F37"
+                    color={isDark ? "#dededeff" : "#888888ff"}
                 />
 
                 <Chart

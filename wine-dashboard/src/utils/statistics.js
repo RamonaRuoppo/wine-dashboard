@@ -6,7 +6,7 @@ export function safeValue(value) {
 }
 
 export function randomNumBetween(min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.round(Math.random() * (max - min) + min);
 }
 
 export function calculateAverage(data, key) {

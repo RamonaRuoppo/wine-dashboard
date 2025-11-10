@@ -64,7 +64,7 @@ button:focus-visible {
 
 .logout-button:hover {
   color: white;
-  background-color: var(--color-accent); /* effetto hover con colore accent */
+  background-color: var(--color-accent);
   border-color: var(--color-accent);
 }
 
@@ -118,6 +118,6 @@ button:focus-visible {
   }
 
   button {
-    background-color: #fae1c8;
+    background-color: #d7d7d7;
   }
 }

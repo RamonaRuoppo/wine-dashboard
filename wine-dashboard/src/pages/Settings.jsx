@@ -89,7 +89,7 @@ const Settings = () => {
                     />
                 </div>
                 <button
-                    className="mt-2 text-black px-4 py-2 rounded hover:bg-[#5b252c] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-2 text-gray-900 px-4 py-2 rounded hover:bg-[#5b252c] transition disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleGenerateData}
                     disabled={!startDate || !endDate}
                 >

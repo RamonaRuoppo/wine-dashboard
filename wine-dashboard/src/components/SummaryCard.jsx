@@ -24,7 +24,7 @@ function SummaryCard({
     badgeBorder,
 }) {
     return (
-        <Card className="p-6 bg-white hover:shadow-lg transition-shadow">
+        <Card className="p-6 bg-white dark:border-gray-700 dark:bg-gray-800 hover:shadow-lg transition-shadow">
             <CardHeader
                 title={title}
                 subtitle={subtitle}
