@@ -72,7 +72,7 @@ function Overview() {
     return (
         <div>
             <div className="flex items-center justify-between">
-                <p className="text-3xl font-semibold mb-6">{title}</p>
+                <p className="text-2xl font-semibold mb-6">{title}</p>
                 <input
                     type="date"
                     value={selectedDate}

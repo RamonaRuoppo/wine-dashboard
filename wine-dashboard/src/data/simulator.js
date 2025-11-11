@@ -1,6 +1,7 @@
 // --- Simulazione di dati climatici + produttivi ---
 
 import { calculateDailyGDD } from "../utils/climateCalculations";
+import { vineyardList } from "./mockData";
 
 export function fetchVineyardData(annualTemps, days = 30) {
     const data = [];
@@ -61,4 +62,24 @@ export function fetchVineyardData(annualTemps, days = 30) {
         });
     }
     return data;
+}
+
+export function generateFinancialData() {
+    return vineyardList.map((v) => {
+        const produzione = (Math.random() * (15 - 8) + 8).toFixed(1); // tonnellate
+        const prezzo = (Math.random() * (2 - 1.4) + 1.4).toFixed(2); // €/kg
+        const ricavi = (produzione * 1000 * prezzo).toFixed(0); // kg -> €
+        const costi = (ricavi * (Math.random() * (0.6 - 0.5) + 0.5)).toFixed(0);
+        const margine = (((ricavi - costi) / ricavi) * 100).toFixed(1);
+
+        return {
+            name: v.name,
+            variety: v.variety,
+            produzione,
+            prezzo,
+            ricavi,
+            costi,
+            margine,
+        };
+    });
 }
