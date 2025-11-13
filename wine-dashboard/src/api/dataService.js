@@ -1,4 +1,4 @@
-import { randomNumBetween } from "../utils/statistics";
+import { randomNumBetween } from "../utils/calculations";
 import { vineyardList } from "../data/mockData";
 
 export function fetchPlanningData() {

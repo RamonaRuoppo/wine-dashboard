@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
-import { fetchVineyardData } from "../data/simulator";
+import { calculateGrapePrimeCost, fetchVineyardData, simulateHourlyVineyardData } from "../data/simulator";
 import { CloudRain, Droplet, Grape, ShieldAlert, Sun, Thermometer, ThermometerSnowflake, TrendingDown, TrendingUp, Wine, Wrench } from "lucide-react";
 import { calculateHuglinIndex, calculateWinklerIndex, classifyHuglin, classifyWinkler, temperatureSimulator } from "../utils/climateCalculations";
 import MetricCard from "../components/MetricCard";
 import SummaryCard from "../components/SummaryCard";
 import Chart from "../components/Chart";
+import { baseDailyCosts } from "../data/mockData";
+import { Legend, Line, LineChart, XAxis, YAxis } from "recharts";
+import Card from "../components/card/Card";
 
 function Overview() {
     const title = "Overview";
     const today = new Date().toISOString().split("T")[0];
 
     const [vineyardData, setVineyardData] = useState([]);
+    const [hourlyData, setHourlyData] = useState([]);
     const [selectedDate, setSelectedDate] = useState(today);
     const [climate, setClimate] = useState({
         gdd: 0,
@@ -52,6 +56,7 @@ function Overview() {
         const huglinTotal = calculateHuglinIndex(yearlyData, kFactor);
         const huglinClass = classifyHuglin(huglinTotal);
 
+
         setClimate({
             gdd: totalGDD.toFixed(0),
             winkler: winklerClass,
@@ -61,6 +66,11 @@ function Overview() {
 
     }, []);
 
+    useEffect(() => {
+        const hourly = simulateHourlyVineyardData();
+        setHourlyData(hourly);
+    }, [selectedDate]);
+
     if (!Array.isArray(vineyardData) || vineyardData.length === 0) {
         return <p>Caricamento dati...</p>;
     }
@@ -68,6 +78,16 @@ function Overview() {
     const selectedData =
         vineyardData.find((d) => d.date === selectedDate) ||
         vineyardData[vineyardData.length - 1];
+
+    const chartData = vineyardData.slice(0, 25).map((d, i) => ({
+        day: i + 1,
+        grapePrimeCost: d.grapePrimeCost,
+        grossMargin: d.grossMargin,
+        humidity: d.humidity,
+        sugarLevel: d.sugarLevel,
+        gddIndex: parseFloat((Math.random() * 10 + 15).toFixed(1)),
+        huglinIndex: parseFloat((Math.random() * 20 + 50).toFixed(1))
+    }));
 
     return (
         <div>
@@ -134,9 +154,9 @@ function Overview() {
                 <h2 className="text-lg font-semibold text-gray-700">Monitoraggio Operativo</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
 
-                {/* INDICE DI HUGLIN (HI) */}
+                {/* Indice di HUGLIN (HI) */}
                 <SummaryCard
                     title="Indice Eliotermico"
                     subtitle={`Classe: ${climate.huglin.region} - ${climate.huglin.name}`}
@@ -160,45 +180,7 @@ function Overview() {
                     color={"#FFC107"}
                 />
 
-                {/* Precipitazioni */}
-                <SummaryCard
-                    title="Indice di Siccità"
-                    subtitle="Precipitazioni Totali"
-                    value={precipitationCurrent + " mm"}
-                    icon={<CloudRain className="w-5 h-5 text-blue-500" />}
-                    info="Volume totale di pioggia caduta nel periodo cruciale. Rilevanza: L'acqua influisce sulla dimensione dell'acino (Resa) e sullo stress idrico. Un basso indice di siccità indica stress idrico, che può ridurre la resa ma aumentare la concentrazione di zuccheri e polifenoli (migliore qualità)."
-                    diff={precipitationDiff + "%"}
-                    diffIcon={precipitationDiff > 0 ? upTrendIcon : downTrendIcon}
-                    diffColor={precipitationDiff > 0 ? "text-green-600" : "text-red-600"}
-                    historicValue={precipitationHistoric + "mm"}
-                    badgeText="Stress Idrico Moderato"
-                    badgeColor="text-orange-600"
-                    badgeBg="bg-orange-100"
-                    badgeBorder="border-orange-300"
-                    color={"#2196F3"}
-                />
-                {/* Ore di sole */}
-                <SummaryCard
-                    title="Ore di Sole Totali"
-                    subtitle="Durante la Maturazione"
-                    icon={<Sun className="w-5 h-5 text-yellow-500" />}
-                    value={sunHoursCurrent + " h"}
-                    info="Il totale delle ore di luce solare nelle fasi finali di maturazione. Rilevanza: Cruciali per la sintesi dei composti aromatici, dei polifenoli e degli zuccheri. Un aumento (come +8% vs. Media) è generalmente un indicatore di alta qualità potenziale."
-                    historicValue={sunHoursHistoric + " h"}
-                    diff={sunHoursDiff + "%"}
-                    diffIcon={sunHoursDiff > 0 ? upTrendIcon : downTrendIcon}
-                    diffColor={sunHoursDiff > 0 ? "text-green-600" : "text-red-600"}
-                    badgeText="Condizioni Ottimali"
-                    badgeColor="text-green-600"
-                    badgeBg="bg-green-100"
-                    badgeBorder="border-green-300"
-                    color={"orange"}
-                />
-
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mt-8">
-                {/* INDICE DI WINKLER (IW) - Totale GDD */}
+                {/* Indice di WINKLER - Totale GDD */}
                 <SummaryCard
                     title="Indice di Winkler"
                     subtitle={`Classe: ${climate.winkler.region} - ${climate.winkler.name}`}
@@ -223,27 +205,108 @@ function Overview() {
                     color={isDark ? "#dededeff" : "#888888ff"}
                 />
 
+                {/* Precipitazioni */}
+                <SummaryCard
+                    title="Indice di Siccità"
+                    subtitle="Precipitazioni Totali"
+                    value={precipitationCurrent + " mm"}
+                    icon={<CloudRain className="w-5 h-5 text-blue-500" />}
+                    info="Volume totale di pioggia caduta nel periodo cruciale. Rilevanza: L'acqua influisce sulla dimensione dell'acino (Resa) e sullo stress idrico. Un basso indice di siccità indica stress idrico, che può ridurre la resa ma aumentare la concentrazione di zuccheri e polifenoli (migliore qualità)."
+                    diff={precipitationDiff + "%"}
+                    diffIcon={precipitationDiff > 0 ? upTrendIcon : downTrendIcon}
+                    diffColor={precipitationDiff > 0 ? "text-green-600" : "text-red-600"}
+                    historicValue={precipitationHistoric + "mm"}
+                    badgeText="Stress Idrico Moderato"
+                    badgeColor="text-orange-600"
+                    badgeBg="bg-orange-100"
+                    badgeBorder="border-orange-300"
+                    color={"#2196F3"}
+                />
 
+                {/* Ore di sole */}
+                <SummaryCard
+                    title="Ore di Sole Totali"
+                    subtitle="Durante la Maturazione"
+                    icon={<Sun className="w-5 h-5 text-yellow-500" />}
+                    value={sunHoursCurrent + " h"}
+                    info="Il totale delle ore di luce solare nelle fasi finali di maturazione. Rilevanza: Cruciali per la sintesi dei composti aromatici, dei polifenoli e degli zuccheri. Un aumento (come +8% vs. Media) è generalmente un indicatore di alta qualità potenziale."
+                    historicValue={sunHoursHistoric + " h"}
+                    diff={sunHoursDiff + "%"}
+                    diffIcon={sunHoursDiff > 0 ? upTrendIcon : downTrendIcon}
+                    diffColor={sunHoursDiff > 0 ? "text-green-600" : "text-red-600"}
+                    badgeText="Condizioni Ottimali"
+                    badgeColor="text-green-600"
+                    badgeBg="bg-green-100"
+                    badgeBorder="border-green-300"
+                    color={"orange"}
+                />
+
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mt-8">
 
                 <Chart
+                    xKey="hour"
                     label="Umidità"
-                    dataKey={"humidity"}
-                    color="#3B82F6"
-                    data={vineyardData.slice(0, 25).map((d, i) => ({
-                        hour: `${String(i).padStart(2, "0")}:00`,
-                        humidity: d.humidity
-                    }))}
+                    data={hourlyData}
+                    lines={[
+                        { key: "humidity", color: "#2196F3", name: "Umidità (%)" },
+                    ]}
                 />
 
                 <Chart
-                    label="Grado Brix (%)"
-                    dataKey={"sugarLevel"}
-                    color="#8E24AA" // Viola
-                    data={vineyardData.slice(0, 25).map((d, i) => ({
-                        hour: `${String(i).padStart(2, "0")}:00`,
-                        sugarLevel: d.sugarLevel
-                    }))}
+                    xKey="hour"
+                    label=": Indice di Maturazione"
+                    data={hourlyData}
+                    lines={[
+                        { key: "gddIndex", color: "#8E24AA", name: "Indice di Winkler" },
+                        { key: "huglinIndex", color: "#43A047", name: "Indice Huglin" }
+                    ]}
                 />
+
+            </div>
+
+
+            <div className="w-full grid grid-cols-2 lg:grid-cols-[1fr_3fr] gap-6 items-start mb-6 mt-6">
+                <div className=" grid grid-cols-1 gap-3">
+                    <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
+                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Water Footprint (VIVA)</h4>
+                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">L/L</span></p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} L/L</p>
+                        <p className="text-xs font-semibold mt-1 'text-green-600">
+                            {200}
+                        </p>
+                    </div>
+                    <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
+                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Carbon Footprint (VIVA)</h4>
+                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">Kg/L</span></p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} Kg/L</p>
+                        <p className={`text-xs mt-1 text-red-600`}>
+                            Base di Calcolo: Ore Lavoro Macchine
+                        </p>
+                    </div>
+                    {/*  <div className="bg-gray-50 dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-gray-400 col-span-1">
+                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Trattamenti (Indice Territorio)</h4>
+                        <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-200 mt-2">
+                            {200} <span className="text-lg font-normal">interventi</span>
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target di Efficienza: {200} interventi</p>
+                        <p className={`text-xs mt-1 ${200 > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            Varianza: {200}% vs Target Settimanale
+                        </p>
+                    </div> */}
+                </div>
+
+                <Chart
+                    xKey="hour"
+                    label="Performance Finanziaria"
+                    data={hourlyData}
+                    lines={[
+                        { key: "grapePrimeCost", color: "#3B82F6", name: "Costo Primo (€ / kg)" },
+                        { key: "grossMargin", color: "#22C55E", name: "Margine Lordo (%)" },
+                    ]}
+                />
+
             </div>
 
 

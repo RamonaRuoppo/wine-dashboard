@@ -1,6 +1,6 @@
 // --- Calcoli climatici e indici ---
 
-import { randomNumBetween } from "./statistics";
+import { randomNumBetween } from "./calculations";
 import { kFactor } from "../data/mockData";
 
 // Simulatore per le temperature

@@ -1,7 +1,40 @@
 // --- Simulazione di dati climatici + produttivi ---
 
+import { randomNumBetween, round } from "../utils/calculations";
 import { calculateDailyGDD } from "../utils/climateCalculations";
-import { vineyardList } from "./mockData";
+import { vineyardList, baseDailyCosts } from "./mockData";
+
+const calculateMargin = (revenue, cost) => round(((revenue - cost) / revenue) * 100, 1);
+
+function simulateDailyClimate(tempDay, cumulativeGDD) {
+    const { minTemp, maxTemp } = tempDay;
+    const temperature = round((minTemp + maxTemp) / 2, 1);
+    const dailyGDD = calculateDailyGDD(minTemp, maxTemp, 10);
+    cumulativeGDD += dailyGDD;
+
+    const rainfall = round(randomNumBetween(0, 8), 1);
+    const humidity = round(Math.min(100, Math.max(20, 40 + rainfall * 5 + randomNumBetween(-5, 5))), 1);
+    const sunlightHours = round(randomNumBetween(6, 12), 1);
+
+    const growthFactor = (temperature / 25) * (humidity / 70) * (1 + rainfall / 10);
+    const grapeYield = round(growthFactor * randomNumBetween(70, 150), 1);
+    const sugarLevel = round(18 + temperature * 0.3 + sunlightHours * 0.4 - humidity * 0.05, 1);
+    const waterUsed = round(rainfall * 0.3 + randomNumBetween(10, 15) * (1 - humidity / 100), 1);
+    const fertilizerUsed = round(randomNumBetween(5, 7), 1);
+
+    return {
+        temperature,
+        humidity,
+        rainfall,
+        sunlightHours,
+        grapeYield,
+        sugarLevel,
+        waterUsed,
+        fertilizerUsed,
+        dailyGDD: round(dailyGDD, 1),
+        cumulativeGDD: round(cumulativeGDD, 1),
+    };
+}
 
 export function fetchVineyardData(annualTemps, days = 30) {
     const data = [];
@@ -19,46 +52,33 @@ export function fetchVineyardData(annualTemps, days = 30) {
         date.setDate(startDate.getDate() + i);
 
         const tempIndex = startOfDayYear + i;
-
         const tempDay = annualTemps[tempIndex] || { minTemp: 10, maxTemp: 25 };
-        const { minTemp, maxTemp } = tempDay;
 
-        const temperature = parseFloat(((minTemp + maxTemp) / 2).toFixed(1));
-        const dailyGDD = calculateDailyGDD(minTemp, maxTemp, 10);
-        cumulativeGDD += dailyGDD;
+        const dailyData = simulateDailyClimate(tempDay, cumulativeGDD);
+        cumulativeGDD = dailyData.cumulativeGDD;
 
-        const humidity = parseFloat((Math.random() * 40 + 40).toFixed(1));
-        const rainfall = parseFloat((Math.random() * 8).toFixed(1));
-        const sunlightHours = parseFloat((Math.random() * 6 + 6).toFixed(1));
+        const viva = simulateVivaValues({
+            waterUsed: dailyData.waterUsed,
+            grapeYield: dailyData.grapeYield,
+        });
 
-        const growthFactor = (temperature / 25) * (humidity / 70) * (1 + rainfall / 10);
-        const grapeYield = parseFloat((growthFactor * (Math.random() * 80 + 70)).toFixed(1));
-        const sugarLevel = parseFloat((18 + temperature * 0.3 + sunlightHours * 0.4 - humidity * 0.05).toFixed(1));
-        const waterUsed = parseFloat((rainfall * 0.5 + Math.random() * 5 + 15).toFixed(1));
-        const fertilizerUsed = parseFloat((Math.random() * 2 + 5).toFixed(1));
+        const grapePrimeCost = calculateGrapePrimeCost({
+            ...baseDailyCosts,
+            fertilizerUsed: dailyData.fertilizerUsed,
+            waterUsed: dailyData.waterUsed,
+            grapeYield: dailyData.grapeYield,
+        });
 
-        // Indicatori VIVA
-        const co2PerBottle = parseFloat((fertilizerUsed * 0.2 + 1).toFixed(2));
-        const waterPerLiter = parseFloat((waterUsed / (grapeYield || 1)).toFixed(2));
-        const territoryIndex = ["Alto", "Medio", "Basso"][Math.floor(Math.random() * 3)];
-        const sustainablePractices = parseFloat((Math.random() * 20 + 80).toFixed(1));
+        const sellingPrice = round(randomNumBetween(1.4, 1.8), 2);
+        const grossMargin = calculateMargin(sellingPrice, grapePrimeCost);
 
         data.push({
             date: date.toISOString().split("T")[0],
-            temperature,
-            humidity,
-            rainfall,
-            sunlightHours,
-            grapeYield,
-            sugarLevel,
-            waterUsed,
-            fertilizerUsed,
-            dailyGDD: parseFloat(dailyGDD.toFixed(1)),
-            cumulativeGDD: parseFloat(cumulativeGDD.toFixed(1)),
-            co2PerBottle,
-            waterPerLiter,
-            territoryIndex,
-            sustainablePractices
+            ...dailyData,
+            grapePrimeCost,
+            grossMargin,
+            sellingPrice,
+            ...viva,
         });
     }
     return data;
@@ -66,11 +86,11 @@ export function fetchVineyardData(annualTemps, days = 30) {
 
 export function generateFinancialData() {
     return vineyardList.map((v) => {
-        const produzione = (Math.random() * (15 - 8) + 8).toFixed(1); // tonnellate
-        const prezzo = (Math.random() * (2 - 1.4) + 1.4).toFixed(2); // €/kg
-        const ricavi = (produzione * 1000 * prezzo).toFixed(0); // kg -> €
-        const costi = (ricavi * (Math.random() * (0.6 - 0.5) + 0.5)).toFixed(0);
-        const margine = (((ricavi - costi) / ricavi) * 100).toFixed(1);
+        const produzione = round(randomNumBetween(8, 15), 1); // tonnellate
+        const prezzo = round(randomNumBetween(1.4, 2), 2); // €/kg
+        const ricavi = round(produzione * 1000 * prezzo, 0); // kg -> €
+        const costi = round(ricavi * randomNumBetween(0.5, 0.6), 0);
+        const margine = calculateMargin(ricavi, costi);
 
         return {
             name: v.name,
@@ -82,4 +102,57 @@ export function generateFinancialData() {
             margine,
         };
     });
+}
+
+export function simulateVivaValues(values) {
+    return {
+        waterFootprint: round(values.waterUsed / (values.grapeYield || 1) + randomNumBetween(-0.1, 0.1), 2),
+        co2Emission: round(0.12 * randomNumBetween(0.7, 1.3), 2),
+        agronomicManagement: round(2.5 * randomNumBetween(0.7, 1.3), 1),
+        territoryResilience: round(2000 * randomNumBetween(0.8, 1.2), 0),
+    };
+}
+
+export function calculateGrapePrimeCost(baseDailyCosts) {
+    const totalCost =
+        baseDailyCosts.laborCost +
+        baseDailyCosts.machineryCost * baseDailyCosts.workingHours +
+        baseDailyCosts.fertilizerCost * baseDailyCosts.fertilizerUsed * baseDailyCosts.workingHours +
+        baseDailyCosts.waterCost * baseDailyCosts.waterUsed +
+        baseDailyCosts.pesticideCost * baseDailyCosts.pesticideTreatments;
+
+    return round(totalCost / (baseDailyCosts.grapeYield || 1), 2); // €/kg
+}
+
+export function simulateHourlyVineyardData() {
+    const data = [];
+
+    for (let hour = 0; hour < 24; hour++) {
+        const dailyVariation = randomNumBetween(-5, 5);
+        const humidity = round(40 + dailyVariation + Math.sin((hour / 24) * Math.PI) * 35, 1);
+
+        const sunlightFactor = Math.sin((hour / 24) * Math.PI);
+        const sugarLevel = round(18 + sunlightFactor * 2 + randomNumBetween(-0.25, 0.25), 1);
+
+        const multiplier = randomNumBetween(0.9, 1.1);
+        const grapePrimeHourlyCost = round(
+            baseDailyCosts.laborCost / baseDailyCosts.workingHours +
+            baseDailyCosts.machineryCost +
+            baseDailyCosts.fertilizerCost * baseDailyCosts.fertilizerUsed * multiplier +
+            baseDailyCosts.waterCost * baseDailyCosts.waterUsed * multiplier +
+            baseDailyCosts.pesticideCost * baseDailyCosts.pesticideTreatments * multiplier,
+            2
+        );
+
+        const grossMargin = round(12450 - grapePrimeHourlyCost * 100 + randomNumBetween(-2.5, 2.5), 1);
+
+        data.push({
+            hour: `${String(hour).padStart(2, "0")}:00`,
+            humidity,
+            sugarLevel,
+            grapePrimeCost: grapePrimeHourlyCost,
+            grossMargin,
+        });
+    }
+    return data;
 }

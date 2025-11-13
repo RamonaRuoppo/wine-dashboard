@@ -4,9 +4,14 @@ export function safeValue(value) {
     return (typeof value === "number" && value >= 0) ? value : 0;
 }
 
-export function randomNumBetween(min, max) {
-    return Math.round(Math.random() * (max - min) + min);
-}
+export const round = (val, decimals = 2) =>
+    Number.isFinite(val) ? parseFloat(val.toFixed(decimals)) : 0;
+
+export const randomNumBetween = (min, max) =>
+    Math.random() * (max - min) + min;
+
+export const randomIntBetween = (min, max) =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
 
 export function calculateAverage(data, key) {
     if (!Array.isArray(data) || data.length === 0) return 0;
@@ -38,8 +43,8 @@ export function calculatePerformanceIndex(data, weights = { yield: 0.4, sugar: 0
     const avgWater = calculateAverage(data, "waterUsed");
     const avgFertilizer = calculateAverage(data, "fertilizerUsed");
 
-    const index = avgYield * weights.yield + avgSugar * weights.sugar + avgWater * weights.water + avgFertilizer * weights.fertilizer;
-    return index.toFixed(2);
+    const performanceIndex = avgYield * weights.yield + avgSugar * weights.sugar + avgWater * weights.water + avgFertilizer * weights.fertilizer;
+    return performanceIndex.toFixed(2);
 }
 
 
@@ -52,12 +57,4 @@ export function calculateStats(data, key) {
     const variance = values.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / values.length;
     const stdDev = Math.sqrt(variance);
     return { avg, min, max, stdDev };
-}
-
-export function calculateCO2PerBottle(fertilizerUsed, yieldValue) {
-    return (fertilizerUsed * 0.2 + yieldValue * 0.001).toFixed(2);
-}
-
-export function calculateWaterPerLiter(waterUsed, yieldValue) {
-    return yieldValue ? (waterUsed / yieldValue).toFixed(2) : 0;
 }

@@ -77,9 +77,9 @@ function Logistic() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <MetricCard title="Ricavi Totali" value={ricaviTotali.toLocaleString()} unit="€" icon={<Euro />} />
-                <MetricCard title="Costi Totali" value={costiTotali.toLocaleString()} unit="€" icon={<Euro />} />
-                <MetricCard title="Margine Medio" value={margineMedio} unit="%" icon={<LineChartIcon />} />
+                <MetricCard title="Ricavi Totali" value={ricaviTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400"/>} />
+                <MetricCard title="Costi Totali" value={costiTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400"/>} />
+                <MetricCard title="Margine Medio" value={margineMedio} unit="%" icon={<LineChartIcon className="dark:text-gray-400"/>} />
             </div>
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-xl mb-3">

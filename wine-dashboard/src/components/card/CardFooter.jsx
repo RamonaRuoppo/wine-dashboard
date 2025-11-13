@@ -21,9 +21,9 @@ function CardFooter({
 
             {progress !== undefined && (
                 <div className="flex flex-col justify-between gap-1 mt-2" >
-                    <div class="flex justify-between mb-1">
-                        <span class="text-xs text-gray-500 dark:text-gray-300 mb-1 w-full">Avanzamento Accumulo Termico:</span>
-                        <span class="text-xs font-medium text-gray-700 dark:text-white">{Math.min(progress, 100)}%</span>
+                    <div className="flex justify-between mb-1">
+                        <span className="text-xs text-gray-500 dark:text-gray-300 mb-1 w-full">Avanzamento Accumulo Termico:</span>
+                        <span className="text-xs font-medium text-gray-700 dark:text-white">{Math.min(progress, 100)}%</span>
                     </div>
                     <progress value={progress} max="100" className="progress-bar w-full" />
                 </div>
