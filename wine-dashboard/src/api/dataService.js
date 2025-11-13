@@ -1,14 +1,14 @@
-import { randomNumBetween } from "../utils/calculations";
+import { randomNumBetween, round } from "../utils/calculations";
 import { vineyardList } from "../data/mockData";
 
 export function fetchPlanningData() {
     return vineyardList.map(v => ({
         vineyard: v.name,
         variety: v.variety,
-        maturation_status: randomNumBetween(75, 95) + "% (Brix " + (Math.random() * (25 - 22) + 22).toFixed(1) + ")",
-        optimal_date: randomNumBetween(12, 20).toString().padStart(2, "0") + "/09",
-        resources: randomNumBetween(5, 10) + " persone, " + randomNumBetween(1, 3) + " macchine",
-        estimated_quantity: randomNumBetween(8, 15) + " t",
+        maturationStatus: round(randomNumBetween(75, 95), 2)+ "% (Brix " + round((Math.random() * (25 - 22) + 22), 2) + ")",
+        optimalDate: round(randomNumBetween(12, 20),0).toString().padStart(2, "0") + "/09",
+        resources: round(randomNumBetween(5, 10), 0) + " persone, " + round(randomNumBetween(1, 3), 0) + " macchine",
+        estimatedQuantity: round(randomNumBetween(8, 15),2) + " t",
     }));
 }
 

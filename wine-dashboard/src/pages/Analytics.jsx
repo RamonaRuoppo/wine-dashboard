@@ -105,12 +105,10 @@ function Analytics() {
                             icon={<Sunrise className="text-orange-300" />}
                             trend={+0.2}
                         />
-
-
                 </div>
             </div>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-6 mt-6">
                 <ColumnsSettings className="w-6 h-6 text-[#722F37]" />
                 <h2 className="text-lg font-semibold text-gray-700">Gestione Risorse in Campo</h2>
             </div>
@@ -138,7 +136,7 @@ function Analytics() {
                 </div>
             </div>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-6 mt-6">
                 <AlertTriangle className="w-6 h-6 text-[#722F37]" />
                 <h2 className="text-lg font-semibold text-gray-700">Rischio Sanitario</h2>
             </div>
@@ -177,7 +175,7 @@ function Analytics() {
                 </table>
             </div>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-6 mt-4">
                 <Leaf className="w-6 h-6 text-[#722F37]" />
                 <h2 className="text-lg font-semibold text-gray-700">Sostenibilità VIVA</h2>
             </div>
@@ -233,7 +231,7 @@ function Analytics() {
                                 <td className="px-6 py-4">{v.description}</td>
                                 <td className="px-6 py-4">{v.baseValue + " " + v.unit}</td>
                                 <td className="px-6 py-4">{2 + " " + v.unit}</td>
-                                <td className="px-6 py-4">{isCompliant ? <CheckCircle /> : <X />}</td>
+                                <td className="px-6 py-4">{isCompliant ? <CheckCircle className="text-green-500" /> : <X className="text-red-500"/>}</td>
                             </tr>
                         ))}
                     </tbody>

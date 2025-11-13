@@ -43,10 +43,10 @@ function Logistic() {
                                     {v.vineyard}
                                 </th>
                                 <td className="px-6 py-4">{v.variety}</td>
-                                <td className="px-6 py-4">{v.maturation_status}</td>
-                                <td className="px-6 py-4">{v.optimal_date}</td>
+                                <td className="px-6 py-4">{v.maturationStatus}</td>
+                                <td className="px-6 py-4">{v.optimalDate}</td>
                                 <td className="px-6 py-4">{v.resources}</td>
-                                <td className="px-6 py-4">{v.estimated_quantity}</td>
+                                <td className="px-6 py-4">{v.estimatedQuantity}</td>
                             </tr>
                         ))}
                     </tbody>

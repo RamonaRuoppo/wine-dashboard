@@ -10,28 +10,28 @@ export const vivaIndicators = [
     {
         indicator: "Acqua",
         subtitle: "Water Footprint",
-        description: "Misura il consumo idrico specifico per la produzione di uva in campo, correlato all'efficienza dell'irrigazione",
+        description: "Misura il consumo idrico specifico per la produzione di uva in campo, correlato all'efficienza dell'irrigazione, e il volume di acqua inquinata (Scarsità idrica e Degradazione della qualità idrica).",
         unit: "L/L",
         baseValue: 1.15
     },
     {
         indicator: "Aria",
         subtitle: "Carbon Footprint",
-        description: "Misura le emissioni di gas serra prodotte esclusivamente dall'uso di macchinari agricoli (trattori e attrezzature) durante le ore di lavoro in vigna.",
+        description: "Esprime l’impatto che la produzione di uno specifico prodotto (CFP=Carbon Footprint of a Product) e/o l’insieme delle attività aziendali (GHGI=Greenhouse Gas Inventory) hanno sul cambiamento climatico.",
         unit: "Kg/L",
         baseValue: 0.12
     },
     {
         indicator: "Vigneto",
         subtitle: "Gestione Agronomica",
-        description: "Valuta l'efficacia delle pratiche di difesa integrata e l'impatto della gestione agronomica, in particolare l'uso degli agrofarmaci, sulle colture.",
+        description: "Prende in considerazione le pratiche di gestione agronomica del vigneto ed in particolare valuta l’utilizzo degli agrofarmaci e le relative conseguenze sui corpi idrici e sul suolo. Analizza inoltre gli aspetti legati alla biodiversità, alla gestione del suolo e alla fertilità.",
         unit: "interventi",
         baseValue: 2.5
     },
     {
         indicator: "Territorio",
-        subtitle: "Resilienza e Paesaggio",
-        description: "Monitora la resilienza del vigneto ai cambiamenti climatici (tramite proxy come GDD e Indice di Siccità) e l'impatto della gestione del suolo e degli input sul paesaggio e la biodiversità.",
+        subtitle: "Paesaggio e Società",
+        description: "Insieme di indicatori qualitativi e quantitativi capaci di misurare gli effetti sul territorio delle azioni intraprese dalle aziende. Gli ambiti di analisi sono la biodiversità, il paesaggio, la società e la collettività, con riferimento anche alle ricadute economiche sul territorio e sulla comunità locale.",
         unit: "°C/giorni",
         baseValue: 2000
     }
