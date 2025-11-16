@@ -91,9 +91,15 @@ function Overview() {
 
     return (
         <div>
-            <div className="flex items-center justify-between">
-                <p className="text-2xl font-semibold mb-6">{title}</p>
-                <input
+            <p className="text-2xl font-semibold mb-6">{title}</p>
+
+            {/* Indici Agronomici e Climatici */}
+
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <Thermometer className="w-6 h-6 text-[#722F37]"></Thermometer>
+                    <h2 className="text-lg font-semibold text-gray-700">Indici Agronomici e Climatici</h2>
+                </div>                <input
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
@@ -101,13 +107,6 @@ function Overview() {
                             focus:outline-none focus:ring-2 focus:ring-[#722F37] focus:border-[#722F37] 
                             transition-shadow shadow-sm cursor-pointer"
                 />
-            </div>
-
-            {/* Indici Agronomici e Climatici */}
-
-            <div className="flex items-center gap-3 mb-6">
-                <Thermometer className="w-6 h-6 text-[#722F37]"></Thermometer>
-                <h2 className="text-lg font-semibold text-gray-700">Indici Agronomici e Climatici</h2>
             </div>
 
             <div className="flex items-center gap-6 mb-6">
@@ -147,6 +146,72 @@ function Overview() {
                 />
             </div>
 
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mt-8">
+
+                <Chart
+                    xKey="hour"
+                    label="Umidità"
+                    data={hourlyData}
+                    lines={[
+                        { key: "humidity", color: "#2196F3", name: "Umidità (%)" },
+                    ]}
+                />
+
+                <Chart
+                    xKey="hour"
+                    label=": Indice di Maturazione"
+                    data={hourlyData}
+                    lines={[
+                        { key: "gddIndex", color: "#8E24AA", name: "Indice di Winkler" },
+                        { key: "huglinIndex", color: "#43A047", name: "Indice Huglin" }
+                    ]}
+                />
+
+            </div>
+
+
+            <div className="w-full grid grid-cols-2 lg:grid-cols-[1fr_3fr] gap-6 items-start mb-10 mt-6">
+                <div className=" grid grid-cols-1 gap-3">
+                    <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
+                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Water Footprint (VIVA)</h4>
+                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">L/L</span></p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} L/L</p>
+                        <p className="text-xs font-semibold mt-1 'text-green-600">
+                            {200}
+                        </p>
+                    </div>
+                    <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
+                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Carbon Footprint (VIVA)</h4>
+                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">Kg/L</span></p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} Kg/L</p>
+                        <p className={`text-xs mt-1 text-red-600`}>
+                            Base di Calcolo: Ore Lavoro Macchine
+                        </p>
+                    </div>
+                    {/*  <div className="bg-gray-50 dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-gray-400 col-span-1">
+                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Trattamenti (Indice Territorio)</h4>
+                        <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-200 mt-2">
+                            {200} <span className="text-lg font-normal">interventi</span>
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target di Efficienza: {200} interventi</p>
+                        <p className={`text-xs mt-1 ${200 > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            Varianza: {200}% vs Target Settimanale
+                        </p>
+                    </div> */}
+                </div>
+
+                <Chart
+                    xKey="hour"
+                    label="Performance Finanziaria"
+                    data={hourlyData}
+                    lines={[
+                        { key: "grapePrimeCost", color: "#3B82F6", name: "Costo Primo (€ / kg)" },
+                        { key: "grossMargin", color: "#22C55E", name: "Margine Lordo (%)" },
+                    ]}
+                />
+
+            </div>
+
             {/* Monitoraggio */}
 
             <div className="flex items-center gap-3 mb-6">
@@ -154,7 +219,7 @@ function Overview() {
                 <h2 className="text-lg font-semibold text-gray-700">Monitoraggio Operativo</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 
                 {/* Indice di HUGLIN (HI) */}
                 <SummaryCard
@@ -242,73 +307,6 @@ function Overview() {
                 />
 
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mt-8">
-
-                <Chart
-                    xKey="hour"
-                    label="Umidità"
-                    data={hourlyData}
-                    lines={[
-                        { key: "humidity", color: "#2196F3", name: "Umidità (%)" },
-                    ]}
-                />
-
-                <Chart
-                    xKey="hour"
-                    label=": Indice di Maturazione"
-                    data={hourlyData}
-                    lines={[
-                        { key: "gddIndex", color: "#8E24AA", name: "Indice di Winkler" },
-                        { key: "huglinIndex", color: "#43A047", name: "Indice Huglin" }
-                    ]}
-                />
-
-            </div>
-
-
-            <div className="w-full grid grid-cols-2 lg:grid-cols-[1fr_3fr] gap-6 items-start mb-6 mt-6">
-                <div className=" grid grid-cols-1 gap-3">
-                    <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
-                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Water Footprint (VIVA)</h4>
-                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">L/L</span></p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} L/L</p>
-                        <p className="text-xs font-semibold mt-1 'text-green-600">
-                            {200}
-                        </p>
-                    </div>
-                    <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
-                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Carbon Footprint (VIVA)</h4>
-                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">Kg/L</span></p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} Kg/L</p>
-                        <p className={`text-xs mt-1 text-red-600`}>
-                            Base di Calcolo: Ore Lavoro Macchine
-                        </p>
-                    </div>
-                    {/*  <div className="bg-gray-50 dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-gray-400 col-span-1">
-                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Trattamenti (Indice Territorio)</h4>
-                        <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-200 mt-2">
-                            {200} <span className="text-lg font-normal">interventi</span>
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target di Efficienza: {200} interventi</p>
-                        <p className={`text-xs mt-1 ${200 > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                            Varianza: {200}% vs Target Settimanale
-                        </p>
-                    </div> */}
-                </div>
-
-                <Chart
-                    xKey="hour"
-                    label="Performance Finanziaria"
-                    data={hourlyData}
-                    lines={[
-                        { key: "grapePrimeCost", color: "#3B82F6", name: "Costo Primo (€ / kg)" },
-                        { key: "grossMargin", color: "#22C55E", name: "Margine Lordo (%)" },
-                    ]}
-                />
-
-            </div>
-
 
         </div>
     );

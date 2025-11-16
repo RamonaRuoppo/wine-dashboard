@@ -1,5 +1,5 @@
 import { randomNumBetween, round } from "../utils/calculations";
-import { vineyardList } from "../data/mockData";
+import { vineyardList } from "./mockData";
 
 export function fetchPlanningData() {
     return vineyardList.map(v => ({

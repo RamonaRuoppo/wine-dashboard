@@ -3,7 +3,7 @@ import Overview from "../pages/Overview.jsx"
 import Analytics from "../pages/Analytics.jsx"
 import Sidebar from "./Sidebar.jsx"
 import Settings from "../pages/Settings.jsx"
-import Logistic from "../pages/Logistic.jsx"
+import Logistics from "../pages/Logistics.jsx"
 
 
 const Dashboard = ({onLogout}) => {
@@ -18,7 +18,7 @@ const Dashboard = ({onLogout}) => {
             <Route path="/" element={<Overview />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/logistic" element={<Logistic />} />
+            <Route path="/logistics" element={<Logistics />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

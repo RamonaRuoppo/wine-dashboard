@@ -2,10 +2,10 @@ import { CalendarArrowDown, Euro, FileChartColumnIncreasingIcon, LineChartIcon, 
 import Card from "../components/card/Card";
 import MetricCard from "../components/MetricCard";
 import { Legend, Line, LineChart, XAxis, YAxis } from "recharts";
-import { fetchPlanningData, fetchTransportData } from "../api/dataService";
+import { fetchPlanningData, fetchTransportData } from "../data/dataService";
 import { generateFinancialData } from "../data/simulator";
 
-function Logistic() {
+function Logistics() {
     const planningData = fetchPlanningData();
     const transportData = fetchTransportData(7);
 
@@ -71,15 +71,19 @@ function Logistic() {
 
             </Card>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-1">
                 <FileChartColumnIncreasingIcon className="w-6 h-6 text-[#722F37]" />
                 <h2 className="text-lg font-semibold text-gray-700">Performance Finanziaria</h2>
             </div>
 
+            <p className="text-sm mb-6 text-gray-500 ml-9">
+                Riepilogo economico della produzione di uva per tenuta, basato sui costi agronomici e sul prezzo di conferimento (€/Kg).
+            </p>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <MetricCard title="Ricavi Totali" value={ricaviTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400"/>} />
-                <MetricCard title="Costi Totali" value={costiTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400"/>} />
-                <MetricCard title="Margine Medio" value={margineMedio} unit="%" icon={<LineChartIcon className="dark:text-gray-400"/>} />
+                <MetricCard title="Ricavi Totali" value={ricaviTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400" />} />
+                <MetricCard title="Costi Totali" value={costiTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400" />} />
+                <MetricCard title="Margine Medio" value={margineMedio} unit="%" icon={<LineChartIcon className="dark:text-gray-400" />} />
             </div>
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-xl mb-3">
@@ -115,4 +119,4 @@ function Logistic() {
     );
 }
 
-export default Logistic;
+export default Logistics;

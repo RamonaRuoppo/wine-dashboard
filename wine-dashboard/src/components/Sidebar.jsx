@@ -30,7 +30,7 @@ function Sidebar({ onLogout }) {
                         <span className="text-white">Analytics</span>
                     </NavLink>
 
-                    <NavLink to="/logistic" className={linkClasses}>
+                    <NavLink to="/logistics" className={linkClasses}>
                         <BarChart2 size={18} className="text-white" />
                         <span className="text-white">Logistica</span>
                     </NavLink>

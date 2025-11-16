@@ -84,27 +84,27 @@ function Analytics() {
             <div className="flex flex-col w-full mb-6">
                 <div className="w-full grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
-                        <MetricCard
-                            title="Umidità"
-                            value={10}
-                            unit="%"
-                            icon={<Droplet className="text-blue-300" />}
-                            trend={-1.2}
-                        />
-                        <MetricCard
-                            title="Precipitazioni"
-                            value={200}
-                            unit="mm"
-                            icon={<CloudRain className="text-blue-600" />}
-                            trend={-0.2}
-                        />
-                        <MetricCard
-                            title="Ore Solari"
-                            value={2}
-                            unit="h"
-                            icon={<Sunrise className="text-orange-300" />}
-                            trend={+0.2}
-                        />
+                    <MetricCard
+                        title="Umidità"
+                        value={10}
+                        unit="%"
+                        icon={<Droplet className="text-blue-300" />}
+                        trend={-1.2}
+                    />
+                    <MetricCard
+                        title="Precipitazioni"
+                        value={200}
+                        unit="mm"
+                        icon={<CloudRain className="text-blue-600" />}
+                        trend={-0.2}
+                    />
+                    <MetricCard
+                        title="Ore Solari"
+                        value={2}
+                        unit="h"
+                        icon={<Sunrise className="text-orange-300" />}
+                        trend={+0.2}
+                    />
                 </div>
             </div>
 
@@ -141,15 +141,47 @@ function Analytics() {
                 <h2 className="text-lg font-semibold text-gray-700">Rischio Sanitario</h2>
             </div>
 
-            <div className="w-68 mb-6">
-                <RiskCard 
-                    title="Pressione Fitosanitaria"
-                    subtitle="Rischio Malattie"
-                    icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
-                    info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
-                    value={risk}
-                    diseases="Peronospora, Oidio"
-                />
+            <div className="flex w-full gap-3">
+                <div className="mb-6">
+                    <RiskCard
+                        title="Pressione Fitosanitaria"
+                        subtitle="Rischio Malattie"
+                        icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
+                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
+                        value={risk}
+                        diseases="Peronospora, Oidio"
+                    />
+                </div>
+                <div className="mb-6">
+                    <RiskCard
+                        title="Pressione Fitosanitaria"
+                        subtitle="Rischio Malattie"
+                        icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
+                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
+                        value={risk}
+                        diseases="Peronospora, Oidio"
+                    />
+                </div>
+                <div className="mb-6">
+                    <RiskCard
+                        title="Pressione Fitosanitaria"
+                        subtitle="Rischio Malattie"
+                        icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
+                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
+                        value={risk}
+                        diseases="Peronospora, Oidio"
+                    />
+                </div>
+                <div className="mb-6">
+                    <RiskCard
+                        title="Pressione Fitosanitaria"
+                        subtitle="Rischio Malattie"
+                        icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
+                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
+                        value={risk}
+                        diseases="Peronospora, Oidio"
+                    />
+                </div>
             </div>
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-xl mb-6">
@@ -158,6 +190,7 @@ function Analytics() {
                         <tr>
                             <th scope="col" className="px-6 py-3">Fattore di Rischio</th>
                             <th scope="col" className="px-6 py-3">Descrizione</th>
+                            <th scope="col" className="px-6 py-3">Sintomatologia</th>
                             <th scope="col" className="px-6 py-3">Livello</th>
                         </tr>
                     </thead>
@@ -168,6 +201,7 @@ function Analytics() {
                                     {r.indicator}
                                 </th>
                                 <td className="px-6 py-4">{r.description}</td>
+                                <td className="px-6 py-4">{r.symptoms}</td>
                                 <td className="px-6 py-4">{r.level}</td>
                             </tr>
                         ))}
@@ -231,7 +265,7 @@ function Analytics() {
                                 <td className="px-6 py-4">{v.description}</td>
                                 <td className="px-6 py-4">{v.baseValue + " " + v.unit}</td>
                                 <td className="px-6 py-4">{2 + " " + v.unit}</td>
-                                <td className="px-6 py-4">{isCompliant ? <CheckCircle className="text-green-500" /> : <X className="text-red-500"/>}</td>
+                                <td className="px-6 py-4">{isCompliant ? <CheckCircle className="text-green-500" /> : <X className="text-red-500" />}</td>
                             </tr>
                         ))}
                     </tbody>
