@@ -14,6 +14,12 @@ const Settings = () => {
         console.log(`Generating simulated data from ${startDate} to ${endDate}`);
     };
 
+    const handleDeleteAccount = () => {
+        localStorage.clear();
+        setShowDeleteModal(false);
+        window.location.href = "/login"; 
+    };
+
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-6">Impostazioni</h2>
@@ -132,7 +138,8 @@ const Settings = () => {
                 <Modal
                     show={showDeleteModal}
                     title="Eliminazione account"
-                    message="Questa funzione è disabilitata per i test. Nessun dato è stato eliminato."
+                    message="Questa funzione è simulata. In un contesto reale, l'utente avrebbe diritto alla cancellazione definitiva dei propri dati personali ai sensi dell'art. 17 del GDPR (“diritto all'oblio”)."
+                    onConfirm={handleDeleteAccount}
                     onClose={() => setShowDeleteModal(false)}
                     cancelText="Chiudi"
                 />

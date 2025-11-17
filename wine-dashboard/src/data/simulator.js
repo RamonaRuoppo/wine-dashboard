@@ -130,19 +130,11 @@ export function simulateHourlyVineyardData(humidity) {
     for (let hour = 0; hour < 24; hour++) {
         const sinusoidal = Math.sin((hour / 24) * Math.PI); // Oscillazione giorno-notte
         const randomShift = randomNumBetween(-3, 3);
-        const humidityPerHour = round(
-            Math.min(100,
-                Math.max(
-                    20,
-                    humidity + sinusoidal * 10 + randomShift
-                )
-            ),
-            1
-        );
+        const humidityPerHour = round(Math.min(100, Math.max(20, humidity + sinusoidal * 10 + randomShift)), 1);
 
         const sunlightFactor = round(Math.sin((hour / 24) * Math.PI) * 1200, 2);
         const sunlightPercent = round((sunlightFactor / 1200) * 100, 2);
-        const sugarLevel = round(18 + sunlightFactor * 0.01 + randomNumBetween(-0.3, 0.3),2);
+        const sugarLevel = round(18 + sunlightFactor * 0.01 + randomNumBetween(-0.3, 0.3), 2);
 
         const multiplier = randomNumBetween(0.9, 1.1);
         const grapePrimeHourlyCost = round(
