@@ -3,7 +3,6 @@
 import { randomNumBetween } from "./calculations";
 import { kFactor } from "../data/mockData";
 
-// Simulatore per le temperature
 export function temperatureSimulator(year = new Date().getFullYear()) {
     const temperatures = [];
     const daysInYear =
@@ -21,7 +20,7 @@ export function temperatureSimulator(year = new Date().getFullYear()) {
         const baseTempMax = 20 + 10 * seasonalFactor;
         const baseTempMin = 3 + 8 * seasonalFactor;
         // Variazioni giornaliere naturali
-        const variationMax = randomNumBetween(-2, 2);
+        const variationMax = randomNumBetween(-1.5, 1.5);
         const variationMin = randomNumBetween(-1, 1);
         // utlizza il valore temp precedente per smorzare le oscillazioni
         const maxTemp = (baseTempMax + variationMax + (prevTempMax - baseTempMax) * smoothFactor).toFixed(1);
@@ -37,7 +36,6 @@ export function temperatureSimulator(year = new Date().getFullYear()) {
         });
 
     }
-    console.log("temperature della stagione:", temperatures);
     return temperatures;
 }
 

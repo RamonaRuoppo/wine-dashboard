@@ -6,6 +6,8 @@ import { classifyWinkler } from "../utils/climateCalculations";
 import RiskCard from "../components/RiskCard";
 import { risksIndicators, vineyardList, vivaIndicators } from "../data/mockData";
 import FilterBar from "../components/FilterBar";
+import Chart from "../components/Chart";
+import { temperatureSimulator } from "../utils/climateCalculations";
 
 const data = fetchVineyardData(30);
 
@@ -13,9 +15,9 @@ function Analytics() {
     const title = "Analytics";
 
     const [vineyardData, setVineyardData] = useState([]);
+    const [yearlyData, setYearlyData] = useState([]);
     const [isCompliant, setIsCompliant] = useState(false);
     const [climate, setClimate] = useState({ gdd: 0, winkler: "", gddPercentage: 0 });
-    const [risk, setRisk] = useState(0);
 
     const latest = vineyardData[vineyardData.length - 1];
 
@@ -31,6 +33,8 @@ function Analytics() {
 
     useEffect(() => {
         const data = fetchVineyardData(30);
+        const generatedYearly = temperatureSimulator(2025);
+        setYearlyData(generatedYearly);
         setVineyardData(data);
 
         // calcolo GDD e Winkler
@@ -44,12 +48,6 @@ function Analytics() {
             gddPercentage: gddPercentage,
         });
 
-        // calcolo rischio fitosanitario
-        const avgHumidity = data.reduce((a, d) => a + d.humidity, 0) / data.length;
-        const avgTemp = data.reduce((a, d) => a + d.temperature, 0) / data.length;
-        const riskValue = Math.min(100, Math.round((avgHumidity / 100) * (avgTemp / 30) * 100));
-
-        setRisk(riskValue);
         const latestDay = data[data.length - 1];
 
         const allCompliant = vivaIndicators.map(indicator => {
@@ -81,31 +79,52 @@ function Analytics() {
 
             <FilterBar />
 
-            <div className="flex flex-col w-full mb-6">
-                <div className="w-full grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+            <div className="grid grid-cols-2 lg:grid-cols-[1fr_3fr] gap-6 items-start">
 
+                <div className="space-y-3">
                     <MetricCard
-                        title="Umidità"
+                        title="Umidità Media"
                         value={10}
                         unit="%"
                         icon={<Droplet className="text-blue-300" />}
                         trend={-1.2}
                     />
                     <MetricCard
-                        title="Precipitazioni"
+                        title="Precipitazione Media"
                         value={200}
                         unit="mm"
                         icon={<CloudRain className="text-blue-600" />}
                         trend={-0.2}
                     />
                     <MetricCard
-                        title="Ore Solari"
+                        title="Ore Solari Medie"
                         value={2}
                         unit="h"
                         icon={<Sunrise className="text-orange-300" />}
                         trend={+0.2}
                     />
                 </div>
+                <Chart
+                    height={"88%"}
+                    xKey="day"
+                    label="Annuale delle Temperature"
+                    data={yearlyData.map((d, i) => {
+                        const date = new Date(2025, 0, 1 + i);
+                        const day = String(date.getDate()).padStart(2, "0");
+                        const month = String(date.getMonth() + 1).padStart(2, "0");
+
+                        return {
+                            day: day + "/" + month,
+                            minTemp: Number(d.minTemp),
+                            maxTemp: Number(d.maxTemp)
+                        };
+                    })}
+                    lines={[
+                        { key: "minTemp", color: "#1E88E5", name: "Temperatura Minima" },
+                        { key: "maxTemp", color: "#E53935", name: "Temperatura Massima" }
+                    ]}
+                />
+
             </div>
 
             <div className="flex items-center gap-3 mb-6 mt-6">
@@ -141,47 +160,15 @@ function Analytics() {
                 <h2 className="text-lg font-semibold text-gray-700">Rischio Sanitario</h2>
             </div>
 
-            <div className="flex w-full gap-3">
-                <div className="mb-6">
+            <div className="flex w-full gap-3 mb-6">
+                {risksIndicators.map((r) => (
                     <RiskCard
-                        title="Pressione Fitosanitaria"
-                        subtitle="Rischio Malattie"
+                        title={r.indicator}
+                        subtitle="Rischio Malattia"
                         icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
-                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
-                        value={risk}
-                        diseases="Peronospora, Oidio"
+                        value={r.value}
                     />
-                </div>
-                <div className="mb-6">
-                    <RiskCard
-                        title="Pressione Fitosanitaria"
-                        subtitle="Rischio Malattie"
-                        icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
-                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
-                        value={risk}
-                        diseases="Peronospora, Oidio"
-                    />
-                </div>
-                <div className="mb-6">
-                    <RiskCard
-                        title="Pressione Fitosanitaria"
-                        subtitle="Rischio Malattie"
-                        icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
-                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
-                        value={risk}
-                        diseases="Peronospora, Oidio"
-                    />
-                </div>
-                <div className="mb-6">
-                    <RiskCard
-                        title="Pressione Fitosanitaria"
-                        subtitle="Rischio Malattie"
-                        icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
-                        info="Indice calcolato da modelli predittivi basati su temperatura e umidità."
-                        value={risk}
-                        diseases="Peronospora, Oidio"
-                    />
-                </div>
+                ))}
             </div>
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-xl mb-6">

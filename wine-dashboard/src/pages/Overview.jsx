@@ -15,7 +15,7 @@ function Overview() {
 
     const [vineyardData, setVineyardData] = useState([]);
     const [hourlyData, setHourlyData] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(today);
+    const [activeDate, setActiveDate] = useState(today);
     const [climate, setClimate] = useState({
         gdd: 0,
         winkler: { region: "N/A", description: "" },
@@ -66,18 +66,20 @@ function Overview() {
 
     }, []);
 
+    const selectedData =
+        vineyardData.find((d) => d.date === activeDate) ||
+        vineyardData[vineyardData.length - 1];
+
     useEffect(() => {
-        const hourly = simulateHourlyVineyardData();
+        if (!selectedData) return;
+
+        const hourly = simulateHourlyVineyardData(selectedData.humidity);
         setHourlyData(hourly);
-    }, [selectedDate]);
+    }, [activeDate, selectedData]);
 
     if (!Array.isArray(vineyardData) || vineyardData.length === 0) {
         return <p>Caricamento dati...</p>;
     }
-
-    const selectedData =
-        vineyardData.find((d) => d.date === selectedDate) ||
-        vineyardData[vineyardData.length - 1];
 
     const chartData = vineyardData.slice(0, 25).map((d, i) => ({
         day: i + 1,
@@ -99,11 +101,12 @@ function Overview() {
                 <div className="flex items-center gap-3">
                     <Thermometer className="w-6 h-6 text-[#722F37]"></Thermometer>
                     <h2 className="text-lg font-semibold text-gray-700">Indici Agronomici e Climatici</h2>
-                </div>                <input
+                </div>
+                <input
                     type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    className="bg-white border border-gray-300 rounded-xl px-2 py-1 text-sm text-gray-700 
+                    value={activeDate}
+                    onChange={(e) => setActiveDate(e.target.value)}
+                    className="bg-white dark:border-gray-700 dark:bg-gray-800 border border-gray-300 rounded-xl px-2 py-1 text-sm text-gray-700 dark:text-gray-300
                             focus:outline-none focus:ring-2 focus:ring-[#722F37] focus:border-[#722F37] 
                             transition-shadow shadow-sm cursor-pointer"
                 />
@@ -119,7 +122,7 @@ function Overview() {
 
                 <MetricCard
                     title="Grado Brix"
-                    unit={"%"}
+                    unit="°Brix"
                     value={selectedData.sugarLevel} //TODO: gestire gradi brix
                     icon={<Wine className="text-red-400" />}
                 />
@@ -149,21 +152,24 @@ function Overview() {
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mt-8">
 
                 <Chart
+                    height={250}
                     xKey="hour"
-                    label="Umidità"
+                    label="Orario Umidità e Zuccheri"
                     data={hourlyData}
                     lines={[
-                        { key: "humidity", color: "#2196F3", name: "Umidità (%)" },
+                        { key: "humidityPerHour", color: "#2196F3", name: "Umidità (%)" },
+                        { key: "sugarLevel", color: "#E53935", name: "Zuccheri (°Brix)" }
                     ]}
                 />
 
                 <Chart
+                    height={250}
                     xKey="hour"
-                    label=": Indice di Maturazione"
+                    label="Giornaliero Irraggiamento – Zuccheri"
                     data={hourlyData}
                     lines={[
-                        { key: "gddIndex", color: "#8E24AA", name: "Indice di Winkler" },
-                        { key: "huglinIndex", color: "#43A047", name: "Indice Huglin" }
+                        { key: "sunlightPercent", name: "Irraggiamento solare (%)", color: "#FB8C00" },
+                        { key: "sugarLevel", color: "#E53935", name: "Zuccheri (°Brix)" }
                     ]}
                 />
 
@@ -201,6 +207,7 @@ function Overview() {
                 </div>
 
                 <Chart
+                    height={"88%"}
                     xKey="hour"
                     label="Performance Finanziaria"
                     data={hourlyData}

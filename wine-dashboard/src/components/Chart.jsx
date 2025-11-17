@@ -9,7 +9,7 @@ import {
     YAxis
 } from "recharts";
 
-function Chart({ data = [], lines = [], xKey = "time", dataKey = "value", label, color }) {
+function Chart({ data = [], lines = [], xKey = "time", dataKey = "value", label, color , height}) {
 
     return (
         <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-4 rounded-xl shadow w-full h-full">
@@ -17,7 +17,7 @@ function Chart({ data = [], lines = [], xKey = "time", dataKey = "value", label,
                 Andamento {label}
             </h3>
 
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={height}>
                 <LineChart
                     margin={{ top: 20, right: 30, left: -10, bottom: 20 }}
                     data={data}

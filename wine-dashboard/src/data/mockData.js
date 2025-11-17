@@ -43,24 +43,28 @@ export const risksIndicators = [
         description: "Malattia fungina che colpisce le foglie, gli steli, i fiori e i frutti della vite. Permane nel terreno sotto forma di spore e il suo sviluppo è legato alle condizioni metereologiche, infatti, si trova più comunemente nei climi umidi dove ci sono grandi quantità di precipitazioni durante la stagione di crescita. Si manifesta principalmente in primavera",
         symptoms: "Aree clorotiche, alterazioni di colore, lesioni su acini, Avvizzimenti e dissecamenti, Aree necrotiche sui germogli",
         level: "basso",
+        value: 20
     },
     {
         indicator: "Muffa grigia della vite",
         description: "Fungo presente in tutti gli ambienti agricoli, compresi quelli viticoli, che può attaccare qualsiasi tipo di substrato organico, potendo vivere in modo saprofitario e/o parassitario in base alle condizioni ambientali e climatiche. La loro produzione è concentrata in due momenti: tra maggio e giugno, in corrispondenza della fioritura, e in autunno, con le prime piogge, in concomitanza alla maturazione.",
         symptoms: "Attacca foglie, tralci, grappoli, acini maturi; raro sulle foglie (se clima è favorevole: caldo-umido). Macchie clorotiche che si trasformano in necrosi localizzate; in caso di elevata umidità, effluorescenza grigiastra.",
-        level: "basso"
+        level: "basso",
+        value: 12
     },
     {
         indicator: "Oidio della vite",
         description: "Malattia fungina causata dal fungo Uncinula necator. Infesta le foglie, i grappoli e i germogli della pianta, impedendo il normale sviluppo e riducendo la capacità di fotosintesi. La sua diffusione è favorita da condizioni ambientali particolarmente favorevoli, come temperature tra i 18 e i 28 gradi Celsius e un'umidità relativa relativamente bassa, ma con abbondanti rugiade notturne.",
         symptoms: "Depositi bianchi e polverosi, Deformazione delle foglie, Impedimento alla crescita dei grappoli, Rallentamento della crescita dei germogli",
-        level: "basso"
+        level: "basso",
+        value: 28
     },
     {
         indicator: "Tignoletta della vite",
         description: "Lepidottero tortricide presente in tutta Italia, con prevalenza nelle zone più meridionali, ed è dannoso per molte varietà di vite. Le infestazioni sono influenzate dalle condizioni climatiche e microambientali, per cui possono variare da un anno all'altro.",
         symptoms: "Distruzione dei bottoni fiorali e dei racimoli, svuotamento e disseccamento dei grappoli.",
-        level: "basso"
+        level: "basso",
+        value: 10
     }
 ];
 
