@@ -6,7 +6,7 @@ import { vineyardList, baseDailyCosts } from "./mockData";
 
 const calculateMargin = (revenue, cost) => round(((revenue - cost) / revenue) * 100, 1);
 
-function simulateDailyClimate(tempDay, cumulativeGDD) {
+export function simulateDailyClimate(tempDay, cumulativeGDD) {
     const { minTemp, maxTemp } = tempDay;
     const temperature = round((minTemp + maxTemp) / 2, 1);
     const dailyGDD = calculateDailyGDD(minTemp, maxTemp, 10);

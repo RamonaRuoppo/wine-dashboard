@@ -8,6 +8,7 @@ import { risksIndicators, vineyardList, vivaIndicators } from "../data/mockData"
 import FilterBar from "../components/FilterBar";
 import Chart from "../components/Chart";
 import { temperatureSimulator } from "../utils/climateCalculations";
+import { fetchPlanningData } from "../data/dataService";
 
 const data = fetchVineyardData(30);
 
@@ -18,29 +19,20 @@ function Analytics() {
     const [yearlyData, setYearlyData] = useState([]);
     const [isCompliant, setIsCompliant] = useState(false);
     const [climate, setClimate] = useState({ gdd: 0, winkler: "", gddPercentage: 0 });
-
-    const latest = vineyardData[vineyardData.length - 1];
-
-    const gddHistoric = 1720;
-
-    const precipitationCurrent = 285; // mm
-    const precipitationHistoric = 340; // mm
-    const precipitationDiff = -16; // percentage
-
-    const sunHoursCurrent = 1240;
-    const sunHoursHistoric = 1150;
-    const sunHoursDiff = +8; // percentage
+    const planning = fetchPlanningData();
+    const resources = planning[0].resources;
+    const [workers, machines] = resources.match(/\d+/g);
 
     useEffect(() => {
         const data = fetchVineyardData(30);
         const generatedYearly = temperatureSimulator(2025);
-        setYearlyData(generatedYearly);
-        setVineyardData(data);
 
-        // calcolo GDD e Winkler
+        setVineyardData(data);
+        setYearlyData(generatedYearly);
+
         const totalGDD = data.reduce((acc, d) => acc + d.dailyGDD, 0);
         const winklerClass = classifyWinkler(totalGDD) || "N/A";
-        const gddPercentage = ((totalGDD / gddHistoric) * 100).toFixed(0);
+        const gddPercentage = ((totalGDD / 1720) * 100).toFixed(0);
 
         setClimate({
             gdd: totalGDD.toFixed(0),
@@ -69,6 +61,23 @@ function Analytics() {
         setIsCompliant(allCompliant);
     }, []);
 
+    if (vineyardData.length === 0) {
+        return <div>Caricamento dati...</div>;
+    }
+
+    const latest = vineyardData[vineyardData.length - 1];
+
+    const avgHumidity = Math.round(
+        vineyardData.reduce((sum, d) => sum + d.humidity, 0) / vineyardData.length
+    );
+    const avgRain = Math.round(
+        vineyardData.reduce((sum, d) => sum + d.rainfall, 0) / vineyardData.length
+    );
+    const avgSun = Math.round(
+        vineyardData.reduce((sum, d) => sum + d.sunlightHours, 0) / vineyardData.length
+    );
+    const gddHistoric = 1720;
+
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-4">{title}</h2>
@@ -77,31 +86,28 @@ function Analytics() {
                 <h2 className="text-lg font-semibold text-gray-700">Efficienza del Raccolto</h2>
             </div>
 
-            <FilterBar />
+            {/* <FilterBar /> */}
 
             <div className="grid grid-cols-2 lg:grid-cols-[1fr_3fr] gap-6 items-start">
 
                 <div className="space-y-3">
                     <MetricCard
                         title="Umidità Media"
-                        value={10}
+                        value={avgHumidity}
                         unit="%"
                         icon={<Droplet className="text-blue-300" />}
-                        trend={-1.2}
                     />
                     <MetricCard
                         title="Precipitazione Media"
-                        value={200}
+                        value={avgRain}
                         unit="mm"
                         icon={<CloudRain className="text-blue-600" />}
-                        trend={-0.2}
                     />
                     <MetricCard
                         title="Ore Solari Medie"
-                        value={2}
+                        value={avgSun}
                         unit="h"
                         icon={<Sunrise className="text-orange-300" />}
-                        trend={+0.2}
                     />
                 </div>
                 <Chart
@@ -127,7 +133,7 @@ function Analytics() {
 
             </div>
 
-            <div className="flex items-center gap-3 mb-6 mt-6">
+            <div className="flex items-center gap-3 mb-6 mt-8">
                 <ColumnsSettings className="w-6 h-6 text-[#722F37]" />
                 <h2 className="text-lg font-semibold text-gray-700">Gestione Risorse in Campo</h2>
             </div>
@@ -139,8 +145,8 @@ function Analytics() {
                         Risorse in Campo
                     </p>
                     <div className="w-full grid grid-cols-2 gap-3 items-start">
-                        <MetricCard title="Manodopera" value={12} unit="persone" />
-                        <MetricCard title="Macchine" value={5} unit="unità" />
+                        <MetricCard title="Manodopera" value={workers} unit="persone" />
+                        <MetricCard title="Macchine" value={machines} unit="unità" />
                     </div>
                 </div>
 
@@ -149,8 +155,8 @@ function Analytics() {
                         Input Agricoli
                     </p>
                     <div className="w-full grid grid-cols-2 gap-3 items-start">
-                        <MetricCard title="Irrigazione" value={1200} unit="L" />
-                        <MetricCard title="Fertilizzanti" value={80} unit="kg" />
+                        <MetricCard title="Irrigazione" value={latest.waterUsed} unit="L" />
+                        <MetricCard title="Fertilizzanti" value={latest.fertilizerUsed} unit="kg" />
                     </div>
                 </div>
             </div>
@@ -162,12 +168,14 @@ function Analytics() {
 
             <div className="flex w-full gap-3 mb-6">
                 {risksIndicators.map((r) => (
-                    <RiskCard
+                    <div className="flex-1">
+                        <RiskCard 
                         title={r.indicator}
                         subtitle="Rischio Malattia"
                         icon={<AlertTriangle className="w-5 h-5 text-yellow-500" />}
                         value={r.value}
                     />
+                    </div>
                 ))}
             </div>
 
@@ -204,7 +212,7 @@ function Analytics() {
             <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 items-start mb-6">
                 <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
                     <h4 className="text-md font-semibold text-gray-700">Water Footprint (VIVA)</h4>
-                    <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">L/L</span></p>
+                    <p className="text-2xl font-extrabold text-red-800 mt-2">{latest.waterFootprint}<span className="text-lg font-normal">L/L</span></p>
                     <p className="text-sm text-gray-500 mt-2">Target VIVA: {200} L/L</p>
                     <p className="text-xs font-semibold mt-1 'text-green-600">
                         {200}
@@ -212,7 +220,7 @@ function Analytics() {
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
                     <h4 className="text-md font-semibold text-gray-700">Carbon Footprint (VIVA)</h4>
-                    <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">Kg/L</span></p>
+                    <p className="text-2xl font-extrabold text-red-800 mt-2">{latest.co2Emission}<span className="text-lg font-normal">Kg/L</span></p>
                     <p className="text-sm text-gray-500 mt-2">Target VIVA: {200} Kg/L</p>
                     <p className={`text-xs mt-1 text-red-600`}>
                         Base di Calcolo: Ore Lavoro Macchine
@@ -221,11 +229,11 @@ function Analytics() {
                 <div className="bg-gray-50 p-6 rounded-lg shadow-md border-l-4 border-gray-400 col-span-1">
                     <h4 className="text-md font-semibold text-gray-700">Trattamenti (Indice Territorio)</h4>
                     <p className="text-3xl font-extrabold text-gray-900 mt-2">
-                        {200} <span className="text-lg font-normal">interventi</span>
+                        {latest.agronomicManagement} <span className="text-lg font-normal">interventi</span>
                     </p>
                     <p className="text-sm text-gray-500 mt-2">Target di Efficienza: {200} interventi</p>
                     <p className={`text-xs mt-1 ${200 > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                        Varianza: {200}% vs Target Settimanale
+                        Varianza: {latest.territoryResilience}% vs Target Settimanale
                     </p>
                 </div>
             </div>
@@ -251,7 +259,7 @@ function Analytics() {
                                 <td className="px-6 py-4">{v.subtitle}</td>
                                 <td className="px-6 py-4">{v.description}</td>
                                 <td className="px-6 py-4">{v.baseValue + " " + v.unit}</td>
-                                <td className="px-6 py-4">{2 + " " + v.unit}</td>
+                                <td className="px-6 py-4">{v.currentValue + " " + v.unit}</td>
                                 <td className="px-6 py-4">{isCompliant ? <CheckCircle className="text-green-500" /> : <X className="text-red-500" />}</td>
                             </tr>
                         ))}

@@ -12,7 +12,7 @@ function classifyRisk(value) {
 function RiskCard({ title, subtitle, icon, info, value, diseases }) {
     const { level, color } = classifyRisk(value);
     return (
-        <Card className="p-6 bg-white hover:shadow-lg transition-shadow">
+        <Card className="p-6 bg-white dark:border-gray-700 dark:bg-gray-800 hover:shadow-lg transition-shadow">
             <CardHeader
                 title={title}
                 subtitle={subtitle}
@@ -21,7 +21,7 @@ function RiskCard({ title, subtitle, icon, info, value, diseases }) {
             />
 
             <div style={{ width: 100, height: 100 }}>
-                <CircularProgressbar className="mb-4 mt-4 "
+                <CircularProgressbar className="mb-4 mt-4"
                     value={value}
                     text={value + "%"}
                     styles={buildStyles({

@@ -41,7 +41,7 @@ function Overview() {
         const yearlyData = temperatureSimulator(2025);
 
         // Chiamata che popola la dashboard
-        const thirtyDaysData = fetchVineyardData(yearlyData, 365);
+        const thirtyDaysData = fetchVineyardData(yearlyData, 30);
         setVineyardData(thirtyDaysData);
 
         // --- Calcoli Winkler (IW) ---
@@ -68,12 +68,12 @@ function Overview() {
 
     const selectedData =
         vineyardData.find((d) => d.date === activeDate) ||
-        vineyardData[vineyardData.length - 1];
+        vineyardData[vineyardData.length - 1] || {};
 
     useEffect(() => {
         if (!selectedData) return;
 
-        const hourly = simulateHourlyVineyardData(selectedData.humidity);
+        const hourly = simulateHourlyVineyardData(selectedData.humidity ?? 60);
         setHourlyData(hourly);
     }, [activeDate, selectedData]);
 
@@ -87,8 +87,8 @@ function Overview() {
         grossMargin: d.grossMargin,
         humidity: d.humidity,
         sugarLevel: d.sugarLevel,
-        gddIndex: parseFloat((Math.random() * 10 + 15).toFixed(1)),
-        huglinIndex: parseFloat((Math.random() * 20 + 50).toFixed(1))
+        gddIndex: d.dailyGDD,
+        huglinIndex: d.huglinIndex ?? 0
     }));
 
     return (
@@ -151,28 +151,36 @@ function Overview() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6 mt-8">
 
-                <Chart
-                    height={250}
-                    xKey="hour"
-                    label="Orario Umidità e Zuccheri"
-                    data={hourlyData}
-                    lines={[
-                        { key: "humidityPerHour", color: "#2196F3", name: "Umidità (%)" },
-                        { key: "sugarLevel", color: "#E53935", name: "Zuccheri (°Brix)" }
-                    ]}
-                />
-
-                <Chart
-                    height={250}
-                    xKey="hour"
-                    label="Giornaliero Irraggiamento – Zuccheri"
-                    data={hourlyData}
-                    lines={[
-                        { key: "sunlightPercent", name: "Irraggiamento solare (%)", color: "#FB8C00" },
-                        { key: "sugarLevel", color: "#E53935", name: "Zuccheri (°Brix)" }
-                    ]}
-                />
-
+                {(() => {
+                    const hourlyDataFixed = hourlyData.map(h => ({
+                        ...h,
+                        sunlightPercent: Math.min(100, (h.sunlightFactor / 1200) * 100)
+                    }));
+                    return (
+                        <>
+                            <Chart
+                                height={250}
+                                xKey="hour"
+                                label="Orario Umidità e Zuccheri"
+                                data={hourlyDataFixed}
+                                lines={[
+                                    { key: "humidityPerHour", color: "#2196F3", name: "Umidità (%)" },
+                                    { key: "sugarLevel", color: "#E53935", name: "Zuccheri (°Brix)" }
+                                ]}
+                            />
+                            <Chart
+                                height={250}
+                                xKey="hour"
+                                label="Giornaliero Irraggiamento – Zuccheri"
+                                data={hourlyDataFixed}
+                                lines={[
+                                    { key: "sunlightPercent", name: "Irraggiamento solare (%)", color: "#FB8C00" },
+                                    { key: "sugarLevel", color: "#E53935", name: "Zuccheri (°Brix)" }
+                                ]}
+                            />
+                        </>
+                    );
+                })()}
             </div>
 
 
@@ -180,42 +188,39 @@ function Overview() {
                 <div className=" grid grid-cols-1 gap-3">
                     <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
                         <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Water Footprint (VIVA)</h4>
-                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">L/L</span></p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} L/L</p>
-                        <p className="text-xs font-semibold mt-1 'text-green-600">
-                            {200}
+                        <p className="text-2xl font-extrabold text-red-800 mt-2">
+                            {selectedData.waterFootprint?.toFixed(2)} <span className="text-lg font-normal">L/L</span>
                         </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: 1.15 L/L</p>
                     </div>
                     <div className="bg-white dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-800 col-span-1 lg:col-span-1">
                         <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Carbon Footprint (VIVA)</h4>
-                        <p className="text-2xl font-extrabold text-red-800 mt-2">{200} <span className="text-lg font-normal">Kg/L</span></p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: {200} Kg/L</p>
-                        <p className={`text-xs mt-1 text-red-600`}>
-                            Base di Calcolo: Ore Lavoro Macchine
+                        <p className="text-2xl font-extrabold text-red-800 mt-2">
+                            {selectedData.co2Emission?.toFixed(2)} <span className="text-lg font-normal">Kg/L</span>
                         </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target VIVA: 0.12 Kg/L</p>
                     </div>
-                    {/*  <div className="bg-gray-50 dark:border-gray-700 dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-gray-400 col-span-1">
-                        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300">Trattamenti (Indice Territorio)</h4>
-                        <p className="text-3xl font-extrabold text-gray-900 dark:text-gray-200 mt-2">
-                            {200} <span className="text-lg font-normal">interventi</span>
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target di Efficienza: {200} interventi</p>
-                        <p className={`text-xs mt-1 ${200 > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                            Varianza: {200}% vs Target Settimanale
-                        </p>
-                    </div> */}
                 </div>
 
-                <Chart
-                    height={"88%"}
-                    xKey="hour"
-                    label="Performance Finanziaria"
-                    data={hourlyData}
-                    lines={[
-                        { key: "grapePrimeCost", color: "#3B82F6", name: "Costo Primo (€ / kg)" },
-                        { key: "grossMargin", color: "#22C55E", name: "Margine Lordo (%)" },
-                    ]}
-                />
+                {(() => {
+                    // Ensure sunlightPercent for hourlyData
+                    const hourlyDataFixed = hourlyData.map(h => ({
+                        ...h,
+                        sunlightPercent: Math.min(100, (h.sunlightFactor / 1200) * 100)
+                    }));
+                    return (
+                        <Chart
+                            height={"92%"}
+                            xKey="hour"
+                            label="Performance Finanziaria"
+                            data={hourlyDataFixed}
+                            lines={[
+                                { key: "grapePrimeCost", color: "#3B82F6", name: "Costo Primo (€ / kg)" },
+                                { key: "grossMargin", color: "#22C55E", name: "Margine Lordo (%)" },
+                            ]}
+                        />
+                    );
+                })()}
 
             </div>
 
