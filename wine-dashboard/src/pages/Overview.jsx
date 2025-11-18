@@ -203,7 +203,6 @@ function Overview() {
                 </div>
 
                 {(() => {
-                    // Ensure sunlightPercent for hourlyData
                     const hourlyDataFixed = hourlyData.map(h => ({
                         ...h,
                         sunlightPercent: Math.min(100, (h.sunlightFactor / 1200) * 100)

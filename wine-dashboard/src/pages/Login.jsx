@@ -54,7 +54,7 @@ const Login = ({ onLogin }) => {
                     <div className="mb-6">
                         <h2 className="text-gray-900 mb-2">Sign In</h2>
                         <p className="text-gray-500 text-sm">
-                            Enter your credentials to access the dashboard
+                            Inserisci le tue credenziali per accedere alla dashboard
                         </p>
                     </div>
 
@@ -70,7 +70,7 @@ const Login = ({ onLogin }) => {
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    placeholder="Enter your username"
+                                    placeholder="Inserisci il tuo username"
                                     className="w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:opacity-50"
                                     disabled={isLoading}
                                 />
@@ -87,7 +87,7 @@ const Login = ({ onLogin }) => {
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Enter your password"
+                                    placeholder="Inserisci la tua password"
                                     className="w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:opacity-50"
                                     disabled={isLoading}
                                 />
@@ -104,7 +104,7 @@ const Login = ({ onLogin }) => {
                                 <Lock className="w-4 h-4 text-blue-600" />
                             </div>
                             <div className="flex-1">
-                                <p className="text-blue-900 text-sm mb-2">Demo Credentials</p>
+                                <p className="text-blue-900 text-sm mb-2">Credenziali Demo</p>
                                 <div className="space-y-1 text-blue-700 text-sm">
                                     <p>
                                         <span className="opacity-70">Username:</span>{" "}
@@ -120,7 +120,7 @@ const Login = ({ onLogin }) => {
                                     onClick={fillDemoCredentials}
                                     className="mt-3 w-full py-1.5 px-3 border border-blue-300 text-blue-700 rounded-md hover:bg-blue-100 text-sm"
                                 >
-                                    Use Demo Credentials
+                                    Usa Credenziali Demo
                                 </button>
                             </div>
                         </div>

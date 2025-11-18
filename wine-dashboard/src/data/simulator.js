@@ -36,7 +36,7 @@ export function simulateDailyClimate(tempDay, cumulativeGDD) {
     };
 }
 
-export function fetchVineyardData(annualTemps, days = 30) {
+export function fetchVineyardData(annualTemps, days = 31) {
     const data = [];
     const today = new Date();
     const currentYear = today.getFullYear();
@@ -110,7 +110,6 @@ export function generateFinancialData() {
         }
 
         const ricavi = round(produzioneKg * prezzo, 0);
-
         const costoPerHa = randomNumBetween(8000, 11000);
         const costi = round(costoPerHa * areaHa, 0);
         const margine = calculateMargin(ricavi, costi);

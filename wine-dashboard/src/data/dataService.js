@@ -3,11 +3,10 @@ import { vineyardList } from "./mockData";
 import { fetchVineyardData } from "./simulator";
 
 export function fetchPlanningData() {
-    const dailyData = fetchVineyardData([], 31);
+    const dailyData = fetchVineyardData([], 30);
     const avgSugar = calculateAverage(dailyData, "sugarLevel");
     const avgYield = calculateAverage(dailyData, "grapeYield");
     const avgGDD = dailyData[dailyData.length - 1]?.cumulativeGDD || 0;
-
 
     function determineStage(brix) {
         if (brix < 19) return "Pre-invaiatura";
