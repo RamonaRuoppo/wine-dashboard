@@ -86,10 +86,33 @@ export function fetchVineyardData(annualTemps, days = 30) {
 
 export function generateFinancialData() {
     return vineyardList.map((v) => {
-        const produzione = round(randomNumBetween(8, 15), 1); // tonnellate
-        const prezzo = round(randomNumBetween(1.4, 2), 2); // €/kg
-        const ricavi = round(produzione * 1000 * prezzo, 0); // kg -> €
-        const costi = round(ricavi * randomNumBetween(0.5, 0.6), 0);
+        const areaHa = v.area;
+
+        let resaPerHa;
+        if (v.variety.includes("Gran Selezione")) {
+            resaPerHa = randomNumBetween(5, 7);
+        } else if (v.variety.includes("Riserva")) {
+            resaPerHa = randomNumBetween(6, 8);
+        } else {
+            resaPerHa = randomNumBetween(7, 10);
+        }
+
+        const produzione = round(resaPerHa * areaHa, 1);
+        const produzioneKg = produzione * 1000;
+
+        let prezzo;
+        if (v.variety.includes("Gran Selezione")) {
+            prezzo = round(randomNumBetween(2.9, 3.5), 2);
+        } else if (v.variety.includes("Riserva")) {
+            prezzo = round(randomNumBetween(2.4, 2.9), 2);
+        } else {
+            prezzo = round(randomNumBetween(1.5, 2.2), 2);
+        }
+
+        const ricavi = round(produzioneKg * prezzo, 0);
+
+        const costoPerHa = randomNumBetween(8000, 11000);
+        const costi = round(costoPerHa * areaHa, 0);
         const margine = calculateMargin(ricavi, costi);
 
         return {

@@ -1,7 +1,7 @@
 export const vineyardList = [
-    { name: "Tignanello", variety: "Chianti Classico DOCG Riserva" },
-    { name: "Badia a Passignano", variety: "Chianti Classico DOCG Gran Selezione" },
-    { name: "Pèppoli", variety: "Chianti Classico DOCG" },
+    { name: "Tignanello", variety: "Chianti Classico DOCG Riserva", area: 50 },
+    { name: "Badia a Passignano", variety: "Chianti Classico DOCG Gran Selezione", area: 54 },
+    { name: "Pèppoli", variety: "Chianti Classico DOCG" , area: 45},
 ];
 
 export const kFactor = 1.06;

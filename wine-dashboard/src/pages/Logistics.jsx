@@ -1,13 +1,13 @@
 import { CalendarArrowDown, Euro, FileChartColumnIncreasingIcon, LineChartIcon, LineSquiggle } from "lucide-react";
 import Card from "../components/card/Card";
 import MetricCard from "../components/MetricCard";
-import { Legend, Line, LineChart, XAxis, YAxis } from "recharts";
 import { fetchPlanningData, fetchTransportData } from "../data/dataService";
 import { generateFinancialData } from "../data/simulator";
+import Chart from "../components/Chart";
 
 function Logistics() {
     const planningData = fetchPlanningData();
-    const transportData = fetchTransportData(7);
+    const transportData = fetchTransportData(31);
 
     const data = generateFinancialData();
 
@@ -24,7 +24,7 @@ function Logistics() {
                 <h2 className="text-lg font-semibold text-gray-700">Pianificazione della Vendemmia</h2>
             </div>
 
-            <div className="relative overflow-x-auto shadow-md sm:rounded-xl mb-6">
+            <div className="relative overflow-x-auto shadow-md sm:rounded-xl mb-8">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
                         <tr>
@@ -53,25 +53,24 @@ function Logistics() {
                 </table>
             </div>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-6 mt-2">
                 <LineSquiggle className="w-6 h-6 text-[#722F37]" />
                 <h2 className="text-lg font-semibold text-gray-700">Movimentazione Interna</h2>
             </div>
 
-            <Card className="mb-6 even:dark:bg-gray-800 border-b dark:border-gray-700 dark:bg-gray-800">
-                <p className="text-gray-400 mb-6  dark:text-white">Tutto ciò che riguarda lo spostamento di risorse, prodotti e mezzi all’interno dell’azienda agricola</p>
-                <LineChart width={"100%"} height={200} data={transportData}>
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Legend />
-                    <Line type="monotone" dataKey="uvaTrasportata" stroke="#722F37" />
-                    <Line type="monotone" dataKey="kmPercorsi" stroke="#2f3772ff" />
-                    <Line type="monotone" dataKey="oreLavoro" stroke="#2f723cff" />
-                </LineChart>
+            <Chart
+                label={" della movimentazione fino alla stagione di vendemmia"}
+                height={250}
+                xKey="day"
+                data={transportData}
+                lines={[
+                    { key: "uvaTrasportata", name: "Uva Trasportata (kg)", color: "#722F37" },
+                    { key: "kmPercorsi", name: "Km Percorsi", color: "#2f3772" },
+                    { key: "oreLavoro", name: "Ore Lavoro", color: "#2f723c" }
+                ]}
+            />
 
-            </Card>
-
-            <div className="flex items-center gap-3 mb-1">
+            <div className="flex items-center gap-3 mb-1 mt-8">
                 <FileChartColumnIncreasingIcon className="w-6 h-6 text-[#722F37]" />
                 <h2 className="text-lg font-semibold text-gray-700">Performance Finanziaria</h2>
             </div>
@@ -81,8 +80,8 @@ function Logistics() {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <MetricCard title="Ricavi Totali" value={ricaviTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400" />} />
-                <MetricCard title="Costi Totali" value={costiTotali.toLocaleString()} unit="€" icon={<Euro className="dark:text-gray-400" />} />
+                <MetricCard title="Ricavi Totali" value={ricaviTotali.toLocaleString("it-IT")} unit="€" icon={<Euro className="dark:text-gray-400" />} />
+                <MetricCard title="Costi Totali" value={costiTotali.toLocaleString("it-IT")} unit="€" icon={<Euro className="dark:text-gray-400" />} />
                 <MetricCard title="Margine Medio" value={margineMedio} unit="%" icon={<LineChartIcon className="dark:text-gray-400" />} />
             </div>
 
@@ -106,8 +105,8 @@ function Logistics() {
                                 <td className="px-6 py-4">{d.variety}</td>
                                 <td className="px-6 py-4">{d.produzione}</td>
                                 <td className="px-6 py-4">{d.prezzo}</td>
-                                <td className="px-6 py-4">{parseInt(d.ricavi).toLocaleString()}</td>
-                                <td className="px-6 py-4">{parseInt(d.costi).toLocaleString()}</td>
+                                <td className="px-6 py-4">{parseInt(d.ricavi).toLocaleString("it-IT")}</td>
+                                <td className="px-6 py-4">{parseInt(d.costi).toLocaleString("it-IT")}</td>
                                 <td className="px-6 py-4">{d.margine}</td>
                             </tr>
                         ))}
