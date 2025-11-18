@@ -20,6 +20,10 @@ const Login = ({ onLogin }) => {
         // login simulation
         if (username === DEMO_CREDENTIALS.username && password === DEMO_CREDENTIALS.password) {
             localStorage.setItem('user_username', username);
+            if (localStorage.getItem("resetSimData") === "true") {
+                localStorage.removeItem("resetSimData");
+                console.log("Reset dati simulati applicato al login");
+            }
             onLogin(username);
             navigateTo('/dashboard');
         } else {

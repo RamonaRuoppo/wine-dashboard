@@ -9,14 +9,14 @@ function Modal({ show, title, message, onConfirm, onClose, confirmText = "OK", c
                 <div className="flex justify-center gap-3">
                     {onConfirm && (
                         <button
-                            className="bg-[#722F37] text-white px-4 py-2 rounded hover:bg-[#5b252c]"
+                            className="text-gray-600 px-4 py-2 rounded hover:bg-[#5b252c]"
                             onClick={onConfirm}
                         >
                             {confirmText}
                         </button>
                     )}
                     <button
-                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+                        className="text-gray-900 px-4 py-2 rounded hover:bg-gray-300"
                         onClick={onClose}
                     >
                         {cancelText}

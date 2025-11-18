@@ -10,6 +10,9 @@ function App() {
 
   const handleLogin = (username) => {
     localStorage.setItem("user_username", username);
+    if (localStorage.getItem("resetSimData") === "true") {
+    localStorage.removeItem("resetSimData");
+}
     setIsLoggedIn(true);
   };
 
